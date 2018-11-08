@@ -1,0 +1,10 @@
+.idea*
+*.pdf
+*.out
+*tmp*
+
+*.aux
+*.bbl
+*.blg
+*.log
+*.gz
