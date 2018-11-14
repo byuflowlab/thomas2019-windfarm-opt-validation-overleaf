@@ -33,7 +33,7 @@
 % editing packages
 \usepackage{todonotes}
 
-\title{LES Validation of Wind Farm Layout Optimization Using a Simple Wake Model and Gradient-based Optimization}
+\title{LES Validation of Wind Farm Layout Optimization Using a Simple Wake Model and Gradient-Based Optimization}
 
 \author{Jared J. Thomas\footnote{PhD Student, Department of Mechanical Engineering, 360 EB, Provo, UT 84602, AIAA Student Member}}
 \affil{Brigham Young University, Provo, UT 84602}
@@ -53,22 +53,21 @@
 
 
 \section{Introduction}
-The Wind Farm Layout Optimization Problem (WFLOP) has been extensively studied in the literature \cite{samorani2013,lackner2007,parada2017,elkinton2008,tingey2015,thomas2015_sustech,valverde2014,fleming2015}. However, there is still significant progress that needs to be made before wind farms can be designed with the most efficient layouts. 
+
 %For an extensive review of the area, refer to Herbert-Acero et al. (2014) \cite{acero2014}. 
-One of the great hurdles to efficient wind farm layout design has been that the traditional optimization approach for wind farms, gradient-free optimization methods, does not scale well with large wind farms. Generally, gradient-free optimization methods are limited to relatively few variables and constraints \todo{citation}. The WFLOPs of interest often have hundreds to thousands of variables and constraints, exceeding the abilities of gradient-free optimization methods \todo{citation}.
+ Wind farm layouts are typically optimized using gradient-free optimization methods. However, grandient-free optimization methods struggle to converge when applied to large-scale wind farm layouts \todo{citation}. This is because gradient-free optimization methods are typically limited to relatively few \todo{how many?} variables and constraints \todo{citation} while the wind farm layout optimization problems (WFLOPs) often have hundreds to thousands of variables and constraints. In short, the variables and constraints of the WFLOPs of interest exceed the abilities of gradient-free optimization methods \todo{citation}.
 
-To overcome the limits of gradient-free optimization, gradient-based methods can be used since they are well suited to problems with many variables and constraints. However, gradient-based methods are prone to premature convergence when used with multi-modal problems, such as the WFLOP \cite{acero2014}. Because of this weakness, gradient-based optimization methods have been ignored until recently. However, recent studies have demonstrated that significant improvements to wind farm layouts, if not global optimality, can be obtained through using gradient-based methods either alone \cite{fleming2015, gebraad2017-max-aep, thomas2017}\todo{cite WEC} or in a hybrid approach with gradient-free methods \cite{rethore2014}. However, large-scale gradient-based optimization results have yet to be validated with the more detailed simulation methods such as Large Eddy Simulation (LES). Such validation is critical for proving the benefits obtained through optimization methods are realistic, and not just an artifact of the simplified models being used. \todo{discuss limits of LES and how it is still useful}\todo{need a bridge to next paragraph}
+In contrast to gradient-free optimization methods, gradient-based methods can efficiently solve problems with much larger numbers of variables and constraints. However, gradient-based methods are prone to premature convergence when used with multi-modal problems, such as the WFLOP \cite{acero2014}. Because of the probability of converging to local optima in multi-modal problems, gradient-based optimization methods have not been seen as viable for solving the WFLOP until recently. However, recent studies have demonstrated that significant improvements to wind farm layouts, if not global optimality, can be obtained by using gradient-based methods either alone \cite{fleming2015, guirguis2016, gebraad2017-max-aep, thomas2017, thomas2018-wec},  or with gradient-free methods in a hybrid approach \cite{rethore2014}. However, it is important to confirm that improvements obtained during optimization are not merely artifacts of the simplified models begin used during optimization. It is unrealistic to build a wind farm multiple times to test various designs, so we are left with wind tunnel testing and large eddy simulation (LES). In this work we have validated the optimized results using LES.
 
-Solving a WFLOP requires several different types of models. Two of the most important of these are the wake model and the farm model. Generally speaking, wind turbine wake models define the wind speed in a turbine wake given a set of inflow conditions, while farm models combine the wakes of various turbines to determine the cumulative effects of the wakes of multiple turbines. Many different wind turbine wake and wind farm models have been presented, all with varying levels of accuracy and computational cost. Many of the wake models, such as the Jensen/Park model \cite{jensen1983}, the Frandsen model \cite{frandsen2006}, and the original FLORIS model \cite{gebraad2014} have regions of non-physical zero-valued gradients, where their gradients go to zero while the gradients of the real design space do not. If a model with non-physical zero-valued gradients is used with gradient-based optimization, the optimization may converge to a very poor local optimum \cite{thomas2017}.
+Solving a WFLOP requires several different types of models. Two of the most important of these are the wake model and the farm model. Generally speaking, wind turbine wake models define the wind speed in a turbine wake given a set of inflow conditions, while farm models combine the wakes of various turbines to determine the cumulative effects of the wakes of multiple turbines. Many different wind turbine wake and wind farm models have been presented, all with varying levels of accuracy and computational cost. Many of the wake models, such as the Jensen/Park model \cite{jensen1983}, the Frandsen model \cite{frandsen2006}, and the original FLORIS model \cite{gebraad2014} have regions of non-physical zero-valued gradients, where their gradients go to zero while the gradients of the real design space do not. If a model with non-physical zero-valued gradients is used with gradient-based optimization, the optimization may converge to an especially poor local optimum due to the lack of information provided in the gradients \cite{thomas2017}.
 
-The Bastankhah and Port\'{e}-Agel wake model presented in \cite{bastankhah2014, bastankhah2016} is well suited to gradient-based optimization, with the exception of the near wake region, which is ignored in the model. The near wake region is rarely needed for evaluating a wind farm since wind turbines are usually placed far enough from each other that they are in the far wake. However, it is important to have the near wake region defined during gradient-based optimization because optimization algorithms may attempt infeasible solutions during the optimization process \cite{belegundu2011}. \todo{what is new}The new wake model uses a Gaussian distribution to define the wake, and is easily applied to different turbines since it only has one independent parameter. Building on this new \todo{new?} wake model, Niayifar and Port\'{e}-Agel have proposed a farm model \todo{check about one param (no params?)} \cite{niayifar2015, niayifar2016} to be used in concert with the Bastankhah and Port\'{e}-Agel wake model as published in 2014 \cite{bastankhah2014}, but a new version of the wake model was published in 2016 \cite{bastankhah2016}. There are some minor problems with the farm model in \cite{niayifar2016} for use with gradient-based optimization that need to be addressed.
+The Bastankhah and Port\'{e}-Agel (BP) wake model presented in \cite{bastankhah2014, bastankhah2016} is well suited to gradient-based optimization, with the exception of the near wake region, which is ignored in the model. The near wake region is rarely needed for evaluating a wind farm since wind turbines are usually placed far enough from each other that they are in the far wake. However, it is important to have the near wake region defined during gradient-based optimization because optimization algorithms may attempt infeasible solutions during the optimization process \cite{belegundu2011}. The BP wake model uses a Gaussian distribution to define the wake, and is easily applied to different turbines since it only has one independent parameter. Building on the BP wake model, Niayifar and Port\'{e}-Agel have proposed a farm model \cite{niayifar2015, niayifar2016} to be used in concert with the BP wake model as published in 2014 \cite{bastankhah2014}, but a newer version of BP wake model was published in 2016 \cite{bastankhah2016}. There are some minor problems with the farm model in \cite{niayifar2016} for use with gradient-based optimization that need to be addressed.
 
-In this work, we address the lack of near wake definition in the Bastankhah and Port\'{e}-Agel wake model for the purposes of using gradient-based optimization methods to solve the WFLOP. We then apply the Niayifar and Port\'{e}-Agel wind farm model with minor adjustments and obtain exact gradients across the entire system. Finally, we solve the WFLOP using a gradient-based approach and demonstrate the validity of the optimized result using LES.
+In this work, we address the lack of near wake definition in the BP wake model for the purposes of using gradient-based optimization methods to solve the WFLOP. We then apply the Niayifar and Port\'{e}-Agel wind farm model with minor adjustments and obtain exact gradients across the entire system. Finally, we solve the WFLOP using a gradient-based approach and demonstrate the validity of the optimized result using LES.
 
 \section{Methods}
 
 \subsection{Wake Model}
-
 While the Bastankhah and Port\'{e}-Agel wind turbine wake model exhibits many characteristics necessary for use with gradient-based optimization, there are some small issues that must be overcome. First, the model has a shifting discontinuity that extends from the turbine location up to several diameters downstream of the the wind turbine. This discontinuity is due to a negative value in the square-root term of the velocity difference calculation of the Bastankhah and Port\'{e}-Agel wake model as shown in \cref{eq:bp-vel}. \todo{double check all equations}
 \begin{equation}\label{eq:bp-vel}
 	\frac{\Delta \bar{u}}{\bar{u}_{\infty}} = \Bigg(1-\sqrt{1-\frac{C_T \cos{\gamma}}{8 \sigma_y \sigma_z/d^2}}~\Bigg) \exp{\bigg(-0.5\Big(\frac{y-\delta}{\sigma_y}\Big)^2\bigg)}\exp{\bigg(-0.5\Big(\frac{z-z_h}{\sigma_z}\Big)^2\bigg)}
@@ -155,7 +154,6 @@ The results of the model changes discussed above can be seen in \cref{fig:model_
 
 
 \subsection{Wind Farm Model}
-\todo{include mention of thrust and power curves used and citation}
 Niayifar and Port\'{e}-Agel proposed a wind farm model that used the Bastankhah and Port\'{e}-Agel model as published in 2014 \cite{bastankhah2014} for calculating the wind speed in the wakes \cite{niayifar2015, niayifar2016}. We applied the same wind farm model to the 2016 version of the Bastankhah and Port\'{e}-Agel model, with some variation as discussed in the following sections.
 % However, due to changes made to the Bastankhah and Port\'{e}-Agel wake model published in 2016 \cite{bastankhah2016}, along with the needs of gradient-based optimization, not all of the proposals made by Niayifar and Port\'{e}-Agel in their 2016 paper can be used. This section will discuss which aspects of the Niayifar and Port\'{e}-Agel model that were and were not used in our system.
 \subsubsection{Wake Combination}
@@ -177,8 +175,42 @@ Niayifar and Port\'{e}-Agel calculated local turbulence intensity using the mode
 Where $I$ is the turbulence intensity. This model is only valid for turbulence intensity values between 0.065 and 0.15. While the initial Bastankhah and Port\'{e}-Agel wake model, the wake model that the farm model presented by Niayifar and Port\'{e}-Agel is based on, does not include turbulence intensity \cite{bastankhah2014}, turbulence intensity was included by Bastankhah and Port\'{e}-Agel in their 2016 publication \cite{bastankhah2016}. We used the same turbulence intensity for the Bastankhah and Port\'{e}-Agel 2016 wake model as was used for the Niayifar and Port\'{e}-Agel wind farm model. Three different approaches to calculating turbulence intensity were employed at various points in the optimization process. (1) local turbulence intensity with a hard maximum function as done by Niayifar and Port\'{e}-Agel \cite{niayifar2016}, (2) local turbulence intensity with a smooth maximum function, and (3) ambient turbulence intensity only.
 
 Local turbulence intensity with a hard maximum function as done by Niayifar and Port\'{e}-Agel \cite{niayifar2016} includes the use of a hard maximum function. The algorithm for calculating local turbulence intensity using the hard maximum function is given in \cref{alg:ti}. In our code implementation, we combined the nested loops used for the velocity and turbulence intensity calculations. 
+%
+\todo{check the algorithm and update as needed}
+\begin{algorithm}
+	\caption{Turbulence Intensity Calculation (for more information, see \cite{niayifar2016})}
+   \label{alg:ti}
+   \begin{algorithmic}
+   \Ensure Turbines are sorted by relative downstream position
+     \For{$j =  1...N$} \Comment{Downstream turbines}
+   	% \State $I_j \gets I_0$ \Comment{Initialize to free-stream turbulence value}
+    \State $A_{r_j} \gets \frac{1}{4}\pi D_{r_j}^2$ \Comment{Rotor swept area of turbine $j$}
+    \State $I_{+_j} \gets 0$
+         \For{$i =  1...N$} \Comment{Upstream turbines}
+         	\State $\Delta X \gets x_j - x_i$ \Comment{Turbine separation distance}
+         	\If{$\Delta X > 0$}
+               \State $\beta \gets 0.5((1+\sqrt{1-C_{T_i}})/\sqrt{1-C_{T_i}})$
+               \State $\epsilon \gets 0.2 \sqrt{\beta}$
+               \State $\sigma = k_i^*\Delta X+D_{r_i}\epsilon$
+               \State $D_w \gets 4\sigma$
+               \State $A_{w_{ij}} \gets$ Wake overlap area of wake $i$ and rotor $j$ \Comment{Assume circular wake}
+               \If{$C_{T_i} > 0.96$}
+                    \State $a_i \gets 0.143 + \sqrt{0.0203-0.6427(0.889 - C_{T_i})}$ \Comment{Glauert correction\cite{gebraad2017-max-aep}}
+               \Else
+                   \State $a_i \gets  \frac{1}{2}(1-\sqrt{1-C_{T_i}})$
+               \EndIf
+               
+               \State $I_{+_{ij}} \gets 0.73 a_{i}^{0.8325} I_i^{0.0325} (\Delta X/D_{r_i})^{-0.32}$
+               \State $I_{+_j} \gets \max{(I_{+_{ij}}A_{w_{ij}}/A_{r_j}, I_{+_j})}$ \Comment{We used \cref{eq:smoothmax3} during the final optimization}
+        	\EndIf
+        \EndFor
+        \State $I_j \gets \sqrt{I_{0}^2 + I_{+_j}^2}$ \Comment{Directly influenced by only one upstream turbine}
+        \State $k_j^* \gets 0.3837I_j+0.003678 $ \Comment{To be used in the wake model calculations}
+     \EndFor
+   \end{algorithmic}    
+\end{algorithm}
 
-Because the hard max creates discontinuites in the model and is not differentiable, we used a smooth maximum function during optimization. The smooth maximum function we used is shown in \cref{eq:smoothmax1,eq:smoothmax2,eq:smoothmax3} and is derived from the LogSumExp (LSE) function \cite{cook}.
+Because the hard max creates discontinuites in the model and is not differentiable, we used a smooth maximum function during final optimization. The smooth maximum function we used is shown in \cref{eq:smoothmax1,eq:smoothmax2,eq:smoothmax3} and is derived from the LogSumExp (LSE) function \cite{cook2010-softmaximum}.
 %
 \begin{equation}\label{eq:smoothmax1}
     t_{max} = \min(t_1, t_2)
@@ -190,19 +222,18 @@ Because the hard max creates discontinuites in the model and is not differentiab
    \text{smoothmax}(t_{max},t_{min},s) = \frac{\ln(1+\exp(s(t_{min}-t_{max})))+s t_{max}}{s}
 \end{equation}
 %
-where $s$ controls the smoothness of the transition between terms and influences the error of the calculation, $t_{max}$ and $t_{min}$ represent the respective maximum and minimum of the two values being compared, and $t_{smax}$ is the result of the smooth max function. In calculating local turbulence intensity, \cref{eq:smoothmax3} is applied as in  \cref{eq:maxti}
+where $s$ controls the smoothness of the transition between terms and influences the error of the calculation, $t_{max}$ and $t_{min}$ represent the respective maximum and minimum of the two values being compared. In calculating local turbulence intensity, \cref{eq:smoothmax3} is applied as in  \cref{eq:maxti}
 %
 \begin{equation}\label{eq:maxti}
     I_{+_j} = \text{smoothmax}{\bigg(\frac{I_{+_{ij}}A_{w_{ij}}}{A_{r_j}}\bigg)}
 \end{equation}
 %
-where $A_{w_{ij}$ is the area of the wake of turbine $i$ at the downstream location of turbine $j$, $A_{r_j}$ is the area of the the rotor of turbine $j$, and $I_{+_{ij}}$ is the added turbulence intensity from turbine $i$ at the downstream location of turbine $j$. The total turbulence intensity is then calculated using \cref{eq:ti_at_turb}
+where $A_{w_{ij}}$ is the area of the wake of turbine $i$ at the downstream location of turbine $j$, $A_{r_j}$ is the area of the the rotor of turbine $j$, and $I_{+_{ij}}$ is the added turbulence intensity from turbine $i$ at the downstream location of turbine $j$. In our implementation only two values are compared at a time. The total turbulence intensity is then calculated using \cref{eq:ti_at_turb}
 %
 \begin{equation}\label{eq:ti_at_turb}
     I_j = \sqrt{I_0^2+I_{+_j}^2}
 \end{equation}
 %
-\todo{consider making it more clear that only two values are compared in the smooth max at a time}
 The maximum error of \cref{eq:smoothmax3} occurs when $t_{min} = t_{max}$, and can be calculated as $Error_{max} = \ln{(2)}/s$. To keep the error from the smooth max below 0.001, or about 1\% of the total turbulence intensity, we set $s=700$.
 
 % Using \cref{eq:ti_npa} in the updated wake model would cause the effects of turbulence intensity to be included twice. We used \cref{eq:ti_npa} to estimate the initial $k^*$ only. Within the model itself, the ambient turbulence intensity only impacts the model through Bastankhah and Port\'{e}-Agel (2016) \cite{bastankhah2016} and local turbulence intensity is not calculated. 
@@ -234,46 +265,9 @@ The maximum error of \cref{eq:smoothmax3} occurs when $t_{min} = t_{max}$, and c
 %    \end{algorithmic}    
 % \end{algorithm}
 % 
-\todo{need to address optimizing without local TI and then with}
-\todo{check the algorithm and update as needed}
-\begin{algorithm} \label{alg:ti}
-	\caption{Turbulence Intensity Calculation (for more information, see \cite{niayifar2016})}
-   \label{alg:ti}
-   \begin{algorithmic}
-   \Ensure Turbines are sorted by relative downstream position
-     \For{$j =  1...N$} \Comment{Downstream turbines}
-   	% \State $I_j \gets I_0$ \Comment{Initialize to free-stream turbulence value}
-    \State $A_{r_j} \gets \frac{1}{4}\pi D_{r_j}^2$ \Comment{Rotor swept area of turbine $j$}
-    \State $I_{+_j} \gets 0$
-         \For{$i =  1...N$} \Comment{Upstream turbines}
-         	\State $\Delta X \gets x_j - x_i$ \Comment{Turbine separation distance}
-         	\If{$\Delta X > 0$}
-               \State $\beta \gets 0.5((1+\sqrt{1-C_{T_i}})/\sqrt{1-C_{T_i}})$
-               \State $\epsilon \gets 0.2 \sqrt{\beta}$
-               \State $\sigma = k_i^*\Delta X+D_{r_i}\epsilon$
-               \State $D_w \gets 4\sigma$
-               \State $A_{w_{ij}} \gets$ Wake overlap area of wake $i$ and rotor $j$ \Comment{Assume circular wake}
-               \If{$C_T_i > 0.96$}
-                    \State $a_i \gets 0.143 + \sqrt{0.0203-0.6427(0.889 - C_T_i)}$ \Comment{Glauert correction\cite{gebraad2017-max-aep}}
-               \Else
-                   \State $a_i \gets  \frac{1}{2}(1-\sqrt{1-C_{T_i}})$
-               \EndIf
-               
-               \State $I_{+_{ij}} \gets 0.73 a_{i}^{0.8325} I_i^{0.0325} (\Delta X/D_{r_i})^{-0.32}$
-               \State $I_{+_j} \gets \max{(I_{+_{ij}}A_{w_{ij}}/A_{r_j}, I_{+_j})}$ \Comment{We used \cref{eq:smoothmax3} during the final optimization}
-        	\EndIf
-        \EndFor
-        \State $I_j \gets \sqrt{I_{0}^2 + I_{+_j}^2}$ \Comment{Directly influenced by only one upstream turbine}
-        \State $k_j^* \gets 0.3837I_j+0.003678 $ \Comment{To be used in the wake model calculations}
-     \EndFor
-   \end{algorithmic}    
-\end{algorithm}
 
 \subsubsection{Sampling Over the Rotor-Swept Area}
-For efficiency during optimization, we approximated the effective velocity of each wind turbine by using a single sampling point located at the rotor hub \todo{expand rotor sampling discussion}
-%four sampling points located to the right, left, top, and bottom of the rotor hub and spaced at 69$\%$ of the rotor diameter from the center of the hub position as shown in \cref{fig:sampling_locs}(a). This location corresponds to the approximate radial position of the highest loads on the turbine blades
-%according to Blade Element Momentum (BEM) theory 
-as shown in \cref{fig:sampling_locs}(b).
+Various methods can be used to approximate the effective velocity at the rotor. The ideal method is a full integration across the rotor-swept area. We approximated the integral by sampling the velocity at various points and taking the average. When comparing our code to LES and other data, we used 100 sampling points accross the rotor-swept area arranged in the sunflower seed pattern as shown in \cref{fig:sampling_locs}(a). For efficiency during optimization, we approximated the effective velocity of each wind turbine by using a single sampling point located at the rotor hub as shown in \cref{fig:sampling_locs}(b).
 
 \begin{figure}[ht]
 	\centering
@@ -286,45 +280,65 @@ as shown in \cref{fig:sampling_locs}(b).
 % 	\subfigure[]{
 % 		\includegraphics[width=0.43\textwidth, trim={0cm -1cm 0cm 0cm}]{final_images/bem_distribution.png}
 % 	}
-	\caption{(a) Dense sampling used to approximate effective hub velocity for LES comparisons. (b) Location of sampling point for approximating effective hub velocity during optimization.}
+	\caption{(a) Sampling used to approximate effective hub velocity for LES comparisons. (b) Location of sampling point for approximating effective hub velocity during optimization.}
 	\label{fig:sampling_locs}
 \end{figure}
 
-\subsubsection{Reproducing Previous Results}
-Using our implementation of the models just described, we were able to reproduce the results of Niayifar and Port\'{e}-Agel \cite{niayifar2016} as shown in \cref{fig:power_line,fig:power_direction}. For the optimization we used the definition of the power coefficient to calculate power as done in \cite{gebraad2014}. \todo{expand discussion of results duplication} \todo{include something about using WEC}
+\subsubsection{AEP and Wind Turbine Power}
+AEP was calculated as in \cref{eq:aep}
+\begin{equation}
+    \label{eq:aep}
+    AEP = \bigg(\frac{hours}{day}\bigg)\bigg(\frac{days}{year} \bigg)\sum_{k=1}^{N_D} \bigg( f_k \sum_{j=1}^{N_T}P_{j_k} \bigg)
+\end{equation}
+%
+where $N_D$ is the number of wind directions, $N_T$ is the number of wind wind turbines, $f_k$ is the probability of wind in direction $k$, and $P_{j_k}$ is calculated based on the definition of the power coefficient as done in \cite{gebraad2014} and shown in \cref{eq:power}.
+%
+\begin{equation}\label{eq:power}
+    P_{j_k} = 
+    \begin{cases} 
+      0 & U_j < U_{cutin} \\
+      0.5\rho A_j C_{P_j}U_j^3 & U_j \geq  U_{cutin} \ \text{and} \ P_{j} < P_{rated} \\
+      P_{rated} & P_{j} \geq P_{rated}
+\end{cases}
+\end{equation}
+%
+where $\rho$ is the air density, $A_j$ represents the rotor-swept area of turbine $j$, and $C_{P_j}$ is the power coefficient of turbine $j$ for the given effective wind speed at the rotor ($U_j$).
 
-\begin{figure}[ht]
+\subsubsection{Model Verification}
+To verify our implimentation of the models described, we compared the output of our code with data for the Horns Rev wind farm from Niayifar and Port\'{e}-Agel \cite{niayifar2016} as shown in \cref{fig:power_line,fig:power_direction}. We calculated error as based on the LES data values from \cite{niayifar2016}. For the Horns Rev row averaging comparison using 100 samples on the rotor-swept area as shown in \cref{fig:power_line}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $6.2\%$ and a maximum error of $10.9\%$; Ignoring local TI resulted in an average error of $32.9\%$ and a maximum error of $46.2\%$; calculating local TI using either the hard maximum or smooth maximum both resulted in an average error of $3.4\%$ and a maximum error of $6.7\%$.  For the Horns Rev directional power comparison using 100 samples on the rotor-swept area as shown in \cref{fig:power_direction}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $3.0\%$ and a maximum error of $7.5\%$; Ignoring local TI resulted in an average error of $8.4\%$ and a maximum error of $34.6\%$; calculating local TI using either the hard maximum or smooth maximum both resulted in an average error of $2.2\%$ and a maximum error of $7.1\%$. The high errors when local TI is ignored are in the directions of highest wake interactions as can be seen in \cref{fig:power_direction} and do not alter the general trend of the directional power. 
+
+\begin{figure}[htbp!]
 	\centering
 	\subfigure[]{
-		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/power_row_2014.pdf}
+		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/power_by_row_horns_rev_100rpt.pdf}
 	}
 	\subfigure[]{
-		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/power_row_2016.pdf}
+		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/power_by_row_horns_rev_1rpt.pdf}
 	}
-	\caption{Averaged power of turbines in columns two, three, and four of the Horns Rev wind farm by turbine row. Data from \cite{niayifar2016}. (a) Comparing our implementation of the 2014 version of the Bastankhah and Port\'{e}-Agel wake model. (b) Comparing our implementation of the 2016 version of the Bastankhah and Port\'{e}-Agel wake model.}
+	\caption{Averaged power of turbines in columns two, three, and four of the Horns Rev wind farm by turbine row. NPA refers to  data from \cite{niayifar2016}. (a) Comparing our code using 100 points to approximate the effective wind speed at the rotor. (b) Comparing our code using a single sample at the rotor hub to approximate the effective wind speed at the rotor.}
 	\label{fig:power_line}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[htbp!]
 	\centering
 	\subfigure[]{
-		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/power_direction_2014.pdf}
+		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/power_by_dir_horns_rev_100rpt.pdf}
 	}
 	\subfigure[]{
-		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/power_direction_2016.pdf}
+		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/power_by_dir_horns_rev_1rpt.pdf}
 	}
-	\caption{Power by direction. Data from \cite{niayifar2016}. (a) Comparing our implementation of the 2014 version of the Bastankhah and Port\'{e}-Agel wake model. (b) Comparing our implementation of the 2016 version of the Bastankhah and Port\'{e}-Agel wake model.}
+	\caption{Power by direction for the Horns Rev wind farm. NPA refers to data from \cite{niayifar2016}. (a) Comparing our code using 100 points to approximate the effective wind speed at the rotor. (b) Comparing our code using a single sample at the rotor hub to approximate the effective wind speed at the rotor.}
 	
 	\label{fig:power_direction}
 \end{figure}
 
 \subsection{Test Case}
 
-For the LES validation, we used the NREL 5-MW reference turbine \cite{jonkman2009}. Our test wind farm was constrained by the domain of the LES simulation precursor. We limited the LES simulation to an area 5 km square to keep necessary computational resources to a reasonable level. In order to avoid edge effects in the simulation, we needed at least 0.5 km between the edge of wind farm and the edge of the simulation space. To limit the computational cost, we used only a single wind direction and rotated the wind turbine locations within the simulation space to calculate the power production in different directions so that a single pre-cursor could be used. The resulting available space for the wind farm was a circle with a 2 km radius in the middle of the simulation space. Within the resulting circular region, we placed as many turbines as possible in a concentric circular pattern with a minimum allowable distance between turbines of 5 times the rotor diameter. The resulting layout is shown in \cref{fig:starting-layout}.    
+For the LES validation, we used the NREL 5-MW reference turbine \cite{jonkman2009definition}. We used the same thrust and power coefficient curves for the NREL 5MW turbine as used in \cite{gebraad2017-max-aep}, with linear interpolation between points. Our test wind farm was constrained by the domain of the LES simulation precursor. We limited the LES simulation to an area 5 km square to keep necessary computational resources to a reasonable level. In order to avoid edge effects in the simulation, we needed at least 0.5 km between the edge of wind farm and the edge of the simulation space. To limit the computational cost, we used only a single wind direction and rotated the wind turbine locations within the simulation space to calculate the power production in different directions so that a single pre-cursor could be used. The resulting available space for the wind farm was a circle with a 2 km radius in the middle of the simulation space. Within the resulting circular region, we placed as many turbines as possible in a concentric circular pattern with a minimum allowable distance between turbines of 5 times the rotor diameter. The resulting layout is shown in \cref{fig:starting-layout}.    
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.75\textwidth]{final_images/round_farm_38Turbines_5DSpacing.pdf}
+	\includegraphics[width=0.75\textwidth]{final_images/round_farm_38Turbines_5DSpacing_start.pdf}
 	\caption{Base case wind farm layout. The circles marking turbine locations are to scale, with diameters equal to the rotor diameter.}
 	\label{fig:starting-layout}
 \end{figure}
@@ -359,19 +373,32 @@ We optimized the layout using Annual Energy Production (AEP) as the objective. T
 %
 Where $(x_i,y_i)$ is the position of each turbine $i$, $S_{i,j}$ represents the separation distance between each pair of turbines $i$ and $j$, $D_{r}$ is the rotor diameter, $(x_c,y_c)$ is the location of the center of the wind farm, and $r_b$ is the radius of the wind farm boundary.
 
-The optimization problem was built in OpenMDAO, a Multidisciplinary Design Analysis and Optimization platform  \cite{gray2010_OpenMDAO}. Gradients of the wake model were obtained using Tapenade, an algorithmic differentiation tool \cite{tapenade2013}. Gradients of all other system components were derived by hand. The final system gradients were combined by OpenMDAO. \todo{include ignoring inactive constraints?}
+The optimization problem was built in OpenMDAO, a Multidisciplinary Design Analysis and Optimization platform  \cite{gray2010_OpenMDAO}. Gradients of the wake model were obtained using Tapenade, an algorithmic differentiation tool \cite{tapenade2013}. Gradients of all other system components were derived by hand. The final system gradients were combined by OpenMDAO.
 
-Once the problem was set up, it was scaled such that the gradients of both the objective function and constraints were close to order one. The final problem was then solved using SNOPT (Sparse Nonlinear OPTimizer), a gradient-based optimization algorithm that uses a sequential quadratic programming approach.  SNOPT was used in this case because it is well suited to non-linear problems with high dimensionality \cite{gill2005}. The optimization was performed from the base case layout and 199 random layouts.  
+Once the problem was set up, it was scaled such that the gradients of both the objective function and constraints were close to order one. The final problem was then solved using SNOPT (Sparse Nonlinear OPTimizer), a gradient-based optimization algorithm that uses a sequential quadratic programming approach. SNOPT was used in this case because it is well suited to non-linear problems with high dimensionality \cite{gill2005}. 
 
-\subsection{LES}
-\todo{where does the following LES refs go? Also seems like wrong TI} The grid cells have a 10\,m spacing in the $x$, $y$, and $z$ directions.  The simulation is run as a neutral boundary layer with 5.6\% turbulence intensity and 8\,m/s at hub height.
-% Precursor?
+We also used the Wake Expansion Continuation (WEC) method \cite{thomas2018-wec} with the following relaxtion factor values: $[3.00, 2.75, 2.50, 2.25, 2.00, 1.75, 1.5, 1.25, 1.00]$. we neglected local turbulence intensity during the WEC optimization series. After completing the WEC series, we ran one final optimization, from the optimized location found using WEC. In the final optimization, local turbulence intensity was calculated with the smooth maximum function as in \cref{eq:smoothmax3}. The local TI was ignored during WEC optimization because including local TI introduces many more local optima in the design space that are exagerated by the use of WEC. 
 
-% Layout?
+To arrive at the final optimized solution, we optimizaed from the base case layout and 199 random layouts.
+\subsection{Large Eddy Simulation}
 
-% Rotation?
+\subsubsection{Simulator for Wind Farm Applications}
 
-\subsection{Comparing LES and Model Results}
+The simulator for wind farm applications (SOWFA) is a high-fidelity, large eddy simulation tool that was developed at NREL for wind plant studies \cite{churchfieldnwtc,churchfield2012numerical,fleming2013sowfa}.  It is a computational fluid dynamics solver based on OpenFOAM \cite{jasak2007openfoam} and can model turbines as actuator disks or actuator lines.  This study uses turbines modeled as actuator disks to reduce computational cost.  Separate studies have been conducted that demonstrate the steady-state power is similar in actuator disk and actuator line cases \cite{martinez2012comparison}.
+
+SOWFA solves the three-dimensional, incompressible, Navier-Stokes euqtions and transport of potential temperature equations, which take into account the thermal buoyancy and Earth rotation (Coriolis) effects in the atmosphere.  The inflow conditions for these simulations are generated using a periodic atmospheric boundary layer precursor with no turbines.  
+
+SOWFA calculates the unsteady flow field to compute the time-varying power, velocity deficits, and aerodynamic loads at each turbine in a wind plant.  This level of computation, with high-fidelity accuracy, takes on the order of hours to days to run on a supercomputer using a few hundred to a few thousand processors, depending on the size of the wind plant.  The simulations run for this study were performed on Peregrine, NREL's high-performance computer \cite{regimbal2015peregrine}.
+
+It should be noted that studies have been performed to validate SOWFA.  For example, it has been compared with 48-turbine Lillgrund wind plant field data and shows good agreement through the first five turbines in a row aligned with the wind direction \cite{churchfield2012large}.  In addition, SOWFA has been tested to verify that it captures the inertial range in the turbulent energy spectra and log-layer in the mean flow, both of which characterize a real atmospheric boundary layer \cite{churchfield2012numerical}.  Further validation studies are ongoing.  
+
+\subsubsection{Simulation Scenarios}
+
+Actuator disk simulations of the 38-turbine layout described in the previous section were performed using SOWFA.  The turbines were simulated uisng the NREL 5\,MW reference turbine \cite{jonkman2009definition} at a 90.0\,m hub height and were operated in 12 different wind directions. To avoid running 12 different precursors, the layout was rotated to a reference wind direction of 270$^\circ$.  These scenarios were simulated under neutral atmospheric conditions with an 8\,m/s mean wind speed at hub height and approximately 6$\%$ turbulence intensity.  
+
+Eachcase was set up and run in SOWFA.  The simulations each ran for approximately 2000\,s of simulated time.  A structured mesh is used in this study with grid spacings of 10\,m spacing in the $x$, $y$, and $z$ directions resulting in a grid that is 500 $\times$ 500 $\times$ 100, i.e. 25,000,000 grid cells.  Using 500 cores, simulations took on the order of 1 day to complete using actuator disk representations of the NREL 5MW turbine for each turbine.  
+
+% \subsection{Comparing LES and Model Results}
 % Comparison Approach
 
 % Directional Power
@@ -383,20 +410,38 @@ Once the problem was set up, it was scaled such that the gradients of both the o
 \subsection{Base Case Layout} \todo{fill in this section with LES comparison figures and discussion}
 The 200 starting layouts' AEP is provided in \cref{fig:opt-distribution}.
 
+\begin{figure}[ht]
+	\centering
+	\subfigure[]{
+		\includegraphics[width=0.98\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/sowfa_compare_pow_by_turb_dir.pdf}
+	}
+	\subfigure[]{
+		\includegraphics[width=0.9\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/sowfa_compare_pow_by_dir.pdf}
+	}
+	\caption{(a) Power production error of individual turbines in each direction as compared to SOWFA for the base case layout (\cref{fig:starting-layout}). (b) Directional power production error as compared to SOWFA for the base case layout (\cref{fig:starting-layout}). }
+	\label{fig:basecase-power-error}
+\end{figure}
+
 \subsection{Optimized Layout} \todo{re-outline this section}
 
 \todo{re-write this section} The 200 starting layouts exhibited a distribution of results demonstrating the highly multi-modal nature of the WFLOP design space. The distribution of the optimization results can be seen in \cref{fig:opt-distribution}.
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.75\textwidth]{final_images/round_farm_38Turbines_5DSpacing_finish.pdf}
+	\caption{Optimized wind farm layout. The circles marking turbine locations are to scale, with diameters equal to the rotor diameter.}
+	\label{fig:optimized-layout}
+\end{figure}
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=0.75\textwidth]{final_images/orig_dist.pdf}
-	\caption{Distribution of AEP results from the 200 starting layouts. The dotted line labeled as Base indicates the AEP of the base case layout.}
+	\includegraphics[width=0.75\textwidth]{final_images/38turbs_results_hist_aep.pdf}
+	\caption{Distribution of optimized AEP results from the 200 optimization runs. The high outlier started from the baseline layout.}
 	\label{fig:opt-distribution}
 \end{figure}
 
 Of the 200 starting layouts, the planned starting layout (shown in \cref{fig:starting-layout}) resulted in the highest AEP. 
 
-\todo{outline LES methods and R&D sections}
+\todo{outline LES methods and R\&D sections}
 %The final layout with the highest AEP is shown in \cref{fig:final-layout}.
 
 % \begin{figure}[ht]
