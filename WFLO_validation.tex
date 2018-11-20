@@ -59,18 +59,18 @@
 
 In contrast to gradient-free optimization methods, some gradient-based methods can solve problems with thousands of variables and constraints \cite{gill2005}. However, gradient-based methods are prone to premature convergence when used with multi-modal problems, such as the WFLOP \cite{acero2014}. Because of the tendency to converge to local optima in multi-modal problems, gradient-based optimization methods have not historically been seen as viable for solving the WFLOP. However, recent studies have demonstrated that significant improvements to wind farm layouts, if not global optimality, can be obtained by using gradient-based methods either alone \cite{fleming2015, guirguis2016, gebraad2017-max-aep, thomas2017, thomas2018-wec},  or with gradient-free methods in a hybrid approach \cite{rethore2014}. 
 
-While the recent results to WFLOPs obtained using gradient-based optimization are promising, it is important to confirm that improvements obtained during optimization are not merely artifacts of the simplified models being used during optimization. However, comparing various layouts within a single wind farm is problematic. It is unrealistic to build a wind farm multiple times to test various designs, so we are left with wind tunnel testing and large eddy simulations (LES). In this work we have validated the optimized results using LES.
+While the recent results to WFLOPs obtained using gradient-based optimization are promising, it is important to confirm that improvements obtained during optimization are not merely artifacts of the simplified models being used during optimization. Comparing various layouts within a single wind farm is problematic. It is unrealistic to build a wind farm multiple times to test various designs, so we are left with wind tunnel testing and large eddy simulations (LES). In this work we have validated the optimized results using LES.
 
 Solving a WFLOP requires several different types of models. Two of the most important of these are the wake model and the farm model. Generally speaking, wind turbine wake models define the wind speed in a turbine wake given a set of inflow conditions, while farm models combine the wakes of various turbines to determine the cumulative effects of the wakes of multiple turbines. Many different wind turbine wake and wind farm models have been presented, all with varying levels of accuracy and computational cost. Many of the wake models, such as the ``tophat" Jensen/Park model \cite{jensen1983}, the Frandsen model \cite{frandsen2006}, and the original FLORIS model \cite{gebraad2014}, have regions of non-physical zero-valued gradients, where their gradients go to zero while the gradients of the real design space do not. If a model with non-physical zero-valued gradients is used with gradient-based optimization, the optimization may converge to an especially poor local optimum due to the lack of information provided in the gradients \cite{thomas2017}.
 
-The Bastankhah and Port\'{e}-Agel (BP) wake model presented in \cite{bastankhah2014, bastankhah2016} is well suited to gradient-based optimization, with the exception of the near wake region. Most of the BP model is smooth, continuous, and free from flat regions, but the near wake defition of the BP model can be either flat or undefined. The near wake region is rarely needed for evaluating a wind farm since wind turbines are usually placed far enough from each other that they are in the far wake. However, it is important to have the near wake region defined and non-flat during gradient-based optimization because optimization algorithms may attempt infeasible solutions during the optimization process \cite{belegundu2011} and the near wake region of the BP model may not be outside the defined optimization constraints. The BP wake model uses a Gaussian distribution to define the rest of the wake, and is easily applied to different turbines since it only has one independent parameter. Building on the BP wake model, Niayifar and Port\'{e}-Agel (NP) have proposed a farm model \cite{niayifar2015, niayifar2016} to be used in concert with the BP wake model as published in 2014 that also makes the one independent variable dependent on turbulence intensity \cite{bastankhah2014}, though newer version of BP wake model was published in 2016 \cite{bastankhah2016}. While the NP model seems to provide good agreement with LES data, there are some minor problems with the NP farm model for use with gradient-based optimization that need to be addressed.
+The Bastankhah and Port\'{e}-Agel (BP) wake model presented in \cite{bastankhah2014, bastankhah2016} is well suited to gradient-based optimization, with the exception of the near wake region. Most of the BP model is smooth, continuous, and free from flat regions, but the near wake defition of the BP model can be either flat or undefined. The near wake region is rarely needed for evaluating a wind farm since wind turbines are usually placed far enough from each other that they are in the far wake. While the final wind farm design may not place turbines in the near wake, it is important to have the near wake region defined and non-flat during gradient-based optimization because optimization algorithms may attempt infeasible solutions during the optimization process \cite{belegundu2011} and the near wake region of the BP model may not be outside the defined optimization constraints. The BP wake model uses a Gaussian distribution to define the rest of the wake, and is easily applied to different turbines since it only has one independent parameter. Building on the BP wake model, Niayifar and Port\'{e}-Agel (NP) have proposed a farm model \cite{niayifar2015, niayifar2016} to be used in concert with the BP wake model as published in 2014 that also makes the one independent variable dependent on turbulence intensity \cite{bastankhah2014}, though newer version of BP wake model was published in 2016 \cite{bastankhah2016}. In this study we use the NP farm model with the 2016 version of the BP wake model. While the NP model seems to provide good agreement with LES data, there are some minor problems with the NP farm model for use with gradient-based optimization that need to be addressed.
 
 In this work, we address the lack of near wake definition in the BP wake model for the purposes of using gradient-based optimization methods to solve the WFLOP. We then apply the NP wind farm model with some adjustments and obtain exact gradients across the entire system. Finally, we solve the WFLOP using a gradient-based approach and demonstrate the validity of the optimized result using LES.
 
 \section{Methods}
 
 \subsection{Wake Model}
-While the BP wake model exhibits many characteristics necessary for use with gradient-based optimization, there are some small issues that must be overcome. First, the main BP model is undefined from the turbine location up to several diameters downstream of the the wind turbine. Bastankhah and Port\'{e}-Agel suggested using a contant velocity in this region \cite{bastankhah2016}, but using regions of constant velocity in the wind turbine wake has been shown to cause premature convergence to very poor local optima when optimizing with gradient-based methods \cite{thomas2017}. The standard BP model cannot be used in the near-wake region because there is a discontinuity due to a negative value in the square-root term of the velocity deficit calculation of the BP wake model as shown in \cref{eq:bp-vel}. \todo{double check all equations}
+While the BP wake model exhibits many characteristics necessary for use with gradient-based optimization, there are some small issues that must be overcome. First, the main BP model is undefined from the turbine location up to several diameters downstream of the the wind turbine. Bastankhah and Port\'{e}-Agel suggested using a constant velocity in this region \cite{bastankhah2016}, but using regions of constant velocity in the wind turbine wake has been shown to cause premature convergence to very poor local optima when optimizing with gradient-based methods \cite{thomas2017}. The standard BP model cannot be used in the near-wake region because there is a discontinuity due to a negative value in the square-root term of the velocity deficit calculation of the BP wake model as shown in \cref{eq:bp-vel}. \todo{double check all equations}
 \begin{equation}\label{eq:bp-vel}
 	\frac{\Delta \bar{u}}{\bar{u}_{i}} = \Bigg[1-\sqrt{1-\frac{C_{T} \cos{\gamma}}{8 \sigma_y \sigma_z/d^2}}~\Bigg] \exp{\bigg(-0.5\bigg[\frac{y-\delta}{\sigma_y}\bigg]^2\bigg)}\exp{\bigg(-0.5\bigg[\frac{z-z_h}{\sigma_z}\bigg]^2\bigg)}
 \end{equation}
@@ -125,7 +125,7 @@ Then, using the magnitude of the Gaussian curve, and keeping the wake spread con
         \exp{\bigg(-0.5  \bigg[\bigg[\frac{\Delta Y }{ \sigma_{y,d}}\bigg]^2+\bigg[\frac{\Delta Z }{ \sigma_{z,d}}\bigg]^2~\bigg]\bigg)}
 \end{equation}
 %
-where $\Delta V_r$ is a pre-determined normalized velocity deficit at the rotor hub. We used a value of $\Delta V_r=\Delta V_{d,m}$. With the linear interpolation method, optimizations succeed even when turbines are spaced quite close to each other.
+where $\Delta V_r$ is a pre-determined normalized velocity deficit at the rotor hub. We used a value of $\Delta V_r=\Delta V_{d,m}$. With the linear interpolation method, optimizations succeed even when turbines are placed less than one diameter from each other.
 \todo{transition}
 Wind shear was added to the model using a power law defined as
 %
@@ -133,7 +133,7 @@ Wind shear was added to the model using a power law defined as
 	u = u_r\bigg[\frac{z-z_o}{z_r-z_o}\bigg]^\psi
 \end{equation}
 %
-where $u_r$ is the reference wind speed, $z$ is the height of interest, $z_r$ is the height at which $u_r$ was measured, $z_o$ is the height of local ground, and $\psi$ is the shear exponent. The value of $\psi$ for comparison to the LES was determined by fitting \cref{eq:shear} to a series of wind speeds in the LES precursor used for validation. We set $z_r$ equal to 80 m for fitting the curve. The appropriate value of $\psi$ for comparison to the LES was determined to be 0.31.
+where $u_r$ is the reference wind speed, $z$ is the height of interest, $z_r$ is the height at which $u_r$ was measured, $z_o$ is the height of local ground, and $\psi$ is the shear exponent. The value of $\psi$ for comparison to the LES was determined by fitting \cref{eq:shear} to a series of wind speeds in the LES precursor used for validation. To fit the curve, $z_r$ was set to 80 m. The appropriate value of $\psi$ for comparison to the LES was determined to be 0.31.
 %0665565.
 The shear exponent fitting plot can be seen in \cref{fig:shear_fit}
 %
@@ -147,13 +147,18 @@ The shear exponent fitting plot can be seen in \cref{fig:shear_fit}
 
 The results of the model changes discussed above can be seen in \cref{fig:model_contours}. These changes make the model continuous throughout the domain and differentiable everywhere except at the exact turbine location. With a separation constraint in place, the probability of turbines landing exactly on top of each other is extremely small, as noted in \cite{thomas2017}. While the linear interpolation makes very little attempt to be physically accurate in the near wake, the accuracy of the model for AEP calculation purposes should be unaffected since turbines will almost never be placed close enough together to be in the linear interpolation region in a final design. If greater accuracy is desired in the near wake, it would be feasible to use the linear interpolation during optimization and then switch to a more accurate near wake model for final calculations, such as the one proposed in \cite{keane2016}.
 
-\begin{figure}[ht]
+\begin{figure}[htbp!]
 	\centering
-	\includegraphics[width=0.75\textwidth, trim={18.5cm 1cm 4.cm 1cm}]{final_images/model_contours_vertical.pdf}
-	\caption{Bastankhah and Port\'{e}-Agel wake model with the added linear interpolation for the near wake and shear model. The white line represents the turbine rotor. This figure was included for comparison with figure 6 of Bastankhah and Port\'{e}-Agel (2014) \cite{bastankhah2014}, and so model values were chosen accordingly. We used a shear exponent of 0.15 for this figure.}
+	\subfigure[]{
+		\includegraphics[width=0.75\textwidth, trim={18.5cm 1cm 4.cm 1cm}]{final_images/model_contours_vertical_before.pdf}
+	}
+	\subfigure[]{
+		\includegraphics[width=0.75\textwidth, trim={18.5cm 1cm 4.cm 1cm}]{final_images/model_contours_vertical_after.pdf}
+	}
+	\caption{Bastankhah and Port\'{e}-Agel wake model (a) without and (b) with the added linear interpolation for the near wake and shear model. The heavy black line represents the turbine rotor. This figure was included for comparison with figure 6 of Bastankhah and Port\'{e}-Agel (2014) \cite{bastankhah2014}, and so model values were chosen accordingly (small wind turbine for use in a wind tunnel). We used a shear exponent of 0.15 for this figure.}
+	
 	\label{fig:model_contours}
-\end{figure}\todo{redo contour figure}
-
+\end{figure}
 
 \subsection{Wind Farm Model}\label{sec:npa}
 Niayifar and Port\'{e}-Agel proposed a wind farm model that used the Bastankhah and Port\'{e}-Agel model as published in 2014 \cite{bastankhah2014} for calculating the wind speed in the wakes \cite{niayifar2015, niayifar2016}. We applied the same wind farm model to the 2016 version of the Bastankhah and Port\'{e}-Agel model, with some variation as discussed in the following sections.
@@ -174,9 +179,9 @@ Niayifar and Port\'{e}-Agel calculated local turbulence intensity using the mode
  	k^* = 0.3837 I + 0.003678
  \end{equation}
 %
-Where $I$ is the turbulence intensity. This model is only valid for turbulence intensity values between 0.065 and 0.15. While the initial Bastankhah and Port\'{e}-Agel wake model, the wake model that the farm model presented by Niayifar and Port\'{e}-Agel is based on, does not include turbulence intensity \cite{bastankhah2014}, turbulence intensity was included by Bastankhah and Port\'{e}-Agel in their 2016 publication \cite{bastankhah2016}. We used the same turbulence intensity for the Bastankhah and Port\'{e}-Agel 2016 wake model as was used for the Niayifar and Port\'{e}-Agel wind farm model. Three different approaches to calculating turbulence intensity were employed at various points in the optimization process. (1) local turbulence intensity with a hard maximum function as done by Niayifar and Port\'{e}-Agel \cite{niayifar2016}, (2) local turbulence intensity with a smooth maximum function, and (3) ambient turbulence intensity only.
+Where $I$ is the turbulence intensity. This model is only valid for turbulence intensity values between 0.065 and 0.15. While the initial BP wake model does not include turbulence intensity \cite{bastankhah2014}, turbulence intensity was included by Bastankhah and Port\'{e}-Agel in their 2016 version of the model \cite{bastankhah2016}. We used the same turbulence intensity calculations for the BP 2016 wake model as was used for the NP wind farm model. Three different approaches to calculating turbulence intensity were employed at various points in the optimization process. (1) local turbulence intensity with a hard maximum function as done by Niayifar and Port\'{e}-Agel \cite{niayifar2016}, (2) local turbulence intensity with a smooth maximum function, and (3) ambient turbulence intensity only.
 
-Local turbulence intensity with a hard maximum function as done by Niayifar and Port\'{e}-Agel \cite{niayifar2016} includes the use of a hard maximum function. The algorithm for calculating local turbulence intensity using the hard maximum function is given in \cref{alg:ti}. In our code implementation, we combined the nested loops used for the velocity and turbulence intensity calculations. 
+The local turbulence intensity calculations proposed by Niayifar and Port\'{e}-Agel \cite{niayifar2016} includes the use of a hard maximum function. The algorithm for calculating local turbulence intensity using the hard maximum function is given in \cref{alg:ti}. In our code implementation, we combined the nested loops used for the velocity and turbulence intensity calculations. 
 %
 \todo{check the algorithm and update as needed}
 \begin{algorithm}
@@ -224,7 +229,7 @@ Because the hard max creates discontinuites in the model and is not differentiab
    \text{smoothmax}(t_{max},t_{min},s) = \frac{\ln(1+\exp(s[t_{min}-t_{max}]))+s t_{max}}{s}
 \end{equation}
 %
-where $s$ controls the smoothness of the transition between terms and influences the error of the calculation, $t_{max}$ and $t_{min}$ represent the respective maximum and minimum of the two values being compared. In calculating local turbulence intensity, \cref{eq:smoothmax3} is applied as in  \cref{eq:maxti}
+where $s$ controls the smoothness of the transition between terms and influences the error of the calculation, $t_{max}$ and $t_{min}$ represent the respective maximum and minimum of the two values being compared. In calculating local turbulence intensity, \cref{eq:smoothmax3} is applied as in  \cref{eq:maxti} to compare the product of the added local turbulence intensity and the wake overlap raitio.
 %
 \begin{equation}\label{eq:maxti}
     I_{+_j} = \text{smoothmax}{\bigg(\frac{I_{+_{ij}}A_{w_{ij}}}{A_{r_j}}\bigg)}
@@ -236,7 +241,13 @@ where $A_{w_{ij}}$ is the area of the wake of turbine $i$ at the downstream loca
     I_j = \sqrt{I_0^2+I_{+_j}^2}
 \end{equation}
 %
-The maximum error of \cref{eq:smoothmax3} occurs when $t_{min} = t_{max}$, and can be calculated as $Error_{max} = \ln{(2)}/s$. To keep the error from the smooth max below 0.001, or about 1\% of the total turbulence intensity, we set $s=700$.
+The maximum error of \cref{eq:smoothmax3} occurs when $t_{min} = t_{max}$, and can be calculated as in \cref{eq:error_max}
+%
+\begin{equation}\label{eq:error_max}
+	Error_{max} = \frac{\ln{(2)}}{s}
+\end{equation}
+%
+To keep the error from the smooth max below 0.001, or about 1\% of the total turbulence intensity, we set $s=700$.
 
 % Using \cref{eq:ti_npa} in the updated wake model would cause the effects of turbulence intensity to be included twice. We used \cref{eq:ti_npa} to estimate the initial $k^*$ only. Within the model itself, the ambient turbulence intensity only impacts the model through Bastankhah and Port\'{e}-Agel (2016) \cite{bastankhah2016} and local turbulence intensity is not calculated. 
 %
@@ -307,7 +318,7 @@ where $N_D$ is the number of wind directions, $N_T$ is the number of wind wind t
 where $\rho$ is the air density, $A_j$ represents the rotor-swept area of turbine $j$, and $C_{P_j}$ is the power coefficient of turbine $j$ for the given effective wind speed at the rotor ($\bar{u}_j$).
 
 \subsubsection{Model Verification}
-To verify our implimentation of the models described, we compared the output of our code with data for the Horns Rev wind farm from Niayifar and Port\'{e}-Agel \cite{niayifar2016} as shown in \cref{fig:power_line,fig:power_direction}. We calculated error as based on the LES data values from \cite{niayifar2016}. For the Horns Rev row averaging comparison using 100 samples on the rotor-swept area as shown in \cref{fig:power_line}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $6.2\%$ and a maximum error of $10.9\%$; Ignoring local TI resulted in an average error of $32.9\%$ and a maximum error of $46.2\%$; calculating local TI using either the hard maximum or smooth maximum both resulted in an average error of $3.4\%$ and a maximum error of $6.7\%$.  For the Horns Rev directional power comparison using 100 samples on the rotor-swept area as shown in \cref{fig:power_direction}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $3.0\%$ and a maximum error of $7.5\%$; Ignoring local TI resulted in an average error of $8.4\%$ and a maximum error of $34.6\%$; calculating local TI using either the hard maximum or smooth maximum both resulted in an average error of $2.2\%$ and a maximum error of $7.1\%$. The high errors when local TI is ignored are in the directions of highest wake interactions as can be seen in \cref{fig:power_direction} and do not alter the general trend of the directional power. 
+To verify our implimentation of the models described, we compared the output of our code with data for the Horns Rev wind farm from Niayifar and Port\'{e}-Agel \cite{niayifar2016} as shown in \cref{fig:power_line,fig:power_direction}. We calculated error as based on the LES data values from \cite{niayifar2016}. For the Horns Rev row averaging comparison using 100 samples on the rotor-swept area as shown in \cref{fig:power_line}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $6.2\%$ and a maximum error of $10.9\%$; Ignoring local turbulence intensity resulted in an average error of $32.9\%$ and a maximum error of $46.2\%$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $3.4\%$ and a maximum error of $6.7\%$.  For the Horns Rev directional power comparison using 100 samples on the rotor-swept area as shown in \cref{fig:power_direction}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $3.0\%$ and a maximum error of $7.5\%$; Ignoring local turbulence intensity resulted in an average error of $8.4\%$ and a maximum error of $34.6\%$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $2.2\%$ and a maximum error of $7.1\%$. The high errors when local turbulence intensity is ignored are in the directions of highest wake interactions as can be seen in \cref{fig:power_direction} and do not alter the general trend of the directional power. 
 
 \begin{figure}[htbp!]
 	\centering
@@ -317,7 +328,7 @@ To verify our implimentation of the models described, we compared the output of 
 	\subfigure[]{
 		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/power_by_row_horns_rev_1rpt.pdf}
 	}
-	\caption{Averaged power of turbines in columns two, three, and four of the Horns Rev wind farm by turbine row. NPA refers to  data from \cite{niayifar2016}. (a) Comparing our code using 100 points to approximate the effective wind speed at the rotor. (b) Comparing our code using a single sample at the rotor hub to approximate the effective wind speed at the rotor.}
+	\caption{Averaged power of turbines in columns two, three, and four of the Horns Rev wind farm by turbine row. NP refers to  data from \cite{niayifar2016}. (a) Comparing our code using 100 points to approximate the effective wind speed at the rotor. (b) Comparing our code using a single sample at the rotor hub to approximate the effective wind speed at the rotor.}
 	\label{fig:power_line}
 \end{figure}
 
@@ -329,7 +340,7 @@ To verify our implimentation of the models described, we compared the output of 
 	\subfigure[]{
 		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/power_by_dir_horns_rev_1rpt.pdf}
 	}
-	\caption{Power by direction for the Horns Rev wind farm. NPA refers to data from \cite{niayifar2016}. (a) Comparing our code using 100 points to approximate the effective wind speed at the rotor. (b) Comparing our code using a single sample at the rotor hub to approximate the effective wind speed at the rotor.}
+	\caption{Power by direction for the Horns Rev wind farm. NP refers to data from \cite{niayifar2016}. (a) Comparing our code using 100 points to approximate the effective wind speed at the rotor. (b) Comparing our code using a single sample at the rotor hub to approximate the effective wind speed at the rotor.}
 	
 	\label{fig:power_direction}
 \end{figure}
@@ -379,9 +390,9 @@ The optimization problem was built in OpenMDAO, a Multidisciplinary Design Analy
 
 Once the problem was set up, it was scaled such that the gradients of both the objective function and constraints were close to order one. The final problem was then solved using SNOPT (Sparse Nonlinear OPTimizer), a gradient-based optimization algorithm that uses a sequential quadratic programming approach. SNOPT was used in this case because it is well suited to non-linear problems with high dimensionality \cite{gill2005}. 
 
-We also used the Wake Expansion Continuation (WEC) method \cite{thomas2018-wec} with the following relaxtion factor values: $[3.00, 2.75, 2.50, 2.25, 2.00, 1.75, 1.5, 1.25, 1.00]$. we neglected local turbulence intensity during the WEC optimization series. After completing the WEC series, we ran one final optimization, from the optimized location found using WEC. In the final optimization, local turbulence intensity was calculated with the smooth maximum function as in \cref{eq:smoothmax3}. The local TI was ignored during WEC optimization because including local TI introduces many more local optima in the design space that are exagerated by the use of WEC. 
+We also used the Wake Expansion Continuation (WEC) method \cite{thomas2018-wec} with the following relaxtion factor values: $[3.00, 2.75, 2.50, 2.25, 2.00, 1.75, 1.5, 1.25, 1.00]$. We neglected local turbulence intensity during the WEC optimization series. After completing the WEC series, we ran one final optimization, from the optimized layout found using WEC. In the final optimization, local turbulence intensity was calculated with the smooth maximum function as in \cref{eq:smoothmax3}. The local turbulence intensity was ignored during WEC optimization because including local turbulence intensity introduces many more local optima in the design space that are exagerated by the use of WEC. 
 
-To arrive at the final optimized solution, we optimizaed from the base case layout and 199 random layouts.
+To arrive at the final optimized solution, we optimized from the base case layout and 199 random layouts.
 \subsection{Large Eddy Simulation}
 
 \subsubsection{Simulator for Wind Farm Applications}
