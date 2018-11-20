@@ -52,14 +52,14 @@
 \maketitle
 
 \begin{abstract}
-Recent work has demonstrated that performing wind farm layout optimization with gradient-based optimization methods is possible, but the improvements shown with gradient-based optimization methods have yet to be validated. Validation of the results with simulations or wind tunnel tests is important because the models used during optimization are very simple and model characteristics may influence the resulting layouts. In this paper we begin by describing the models used, including changes specific for use with gradient-based optimization. We then compare our version of the models with the original versions and large eddy simulation (LES). Using the models described, we performed gradient-based wind farm layout optimization, using exact gradients, and compare the results to LES simulations. \todo{brief description of results}
+Recent work has demonstrated that performing wind farm layout optimization with gradient-based optimization methods is possible, but the improvements shown with gradient-based optimization methods have yet to be validated. Validation of the results with simulations or wind tunnel tests is important because the models used during optimization are simple and model characteristics may influence the resulting layouts. In this paper we begin by describing the models used, including changes specific for use with gradient-based optimization. We then compare our version of the models with the original versions and large eddy simulation (LES). Using the models described, we performed gradient-based wind farm layout optimization, using exact gradients, and compare the results to LES simulations. \todo{brief description of results}
 \end{abstract}
 
 
 \section{Introduction}
 
 %For an extensive review of the area, refer to Herbert-Acero et al. (2014) \cite{acero2014}. 
- Wind farm layouts are typically optimized using gradient-free optimization methods. However, grandient-free optimization methods exhibit reduced performance when applied to high dimensional problems \cite{rios2013-grad-free-comparison}. In \cite{rios2013-grad-free-comparison}, most gradient-free solvers were unable to solve more than $15\%$ of the test problems studied with 10-30 design variables, while the best methods tested could solve only $28\%$ of the test problems with 31-300 design variables. New wind farms can include well over 100 turbines, meaning over 200 variables and thousands of constraints. In short, the variables and constraints of the WFLOPs of interest exceed the abilities of gradient-free optimization methods.
+ Wind farm layouts are typically optimized using gradient-free optimization methods. However, grandient-free optimization methods exhibit reduced performance when applied to high dimensional problems \cite{rios2013-grad-free-comparison}. In \cite{rios2013-grad-free-comparison}, most gradient-free solvers were unable to solve more than $15\%$ of the test problems studied with 10-30 design variables, while the best methods tested could solve only $28\%$ of the test problems with 31-300 design variables. New wind farms can include well over 100 turbines, meaning over 200 variables and thousands of constraints. In short, the variables and constraints of the wind farm layout optimization problems (WFLOPs) of interest exceed the abilities of gradient-free optimization methods.
 
 In contrast to gradient-free optimization methods, some gradient-based methods can solve problems with thousands of variables and constraints \cite{gill2005}. However, gradient-based methods are prone to premature convergence when used with multi-modal problems, such as the WFLOP \cite{acero2014}. Because of the tendency to converge to local optima in multi-modal problems, gradient-based optimization methods have not historically been seen as viable for solving the WFLOP. However, recent studies have demonstrated that significant improvements to wind farm layouts, if not global optimality, can be obtained by using gradient-based methods either alone \cite{fleming2015, guirguis2016, gebraad2017-max-aep, thomas2017, thomas2018-wec},  or with gradient-free methods in a hybrid approach \cite{rethore2014}. 
 
@@ -74,7 +74,7 @@ In this work, we address the lack of near wake definition in the BP wake model f
 \section{Methods}
 
 \subsection{Wake Model}
-While the BP wake model exhibits many characteristics necessary for use with gradient-based optimization, there are some small issues that must be overcome. First, the main BP model is undefined from the turbine location up to several diameters downstream of the the wind turbine. Bastankhah and Port\'{e}-Agel suggested using regions of constant velocity in the near wake \cite{bastankhah2016}, but using regions of constant velocity in the wind turbine wake has been shown to cause premature convergence to very poor local optima when optimizing with gradient-based methods \cite{thomas2017}. The standard BP model cannot be used in the near-wake region because there is a discontinuity due to a negative value in the square-root term of the velocity deficit calculation of the BP wake model as shown in \Cref{eq:bp-vel}. \todo{double check all equations}
+While the BP wake model exhibits many characteristics necessary for use with gradient-based optimization, there are some small issues that must be overcome. First, the main BP model is undefined from the turbine location up to several diameters downstream of the the wind turbine. Bastankhah and Port\'{e}-Agel suggested using regions of constant velocity in the near wake \cite{bastankhah2016}, but using regions of constant velocity in the wind turbine wake has been shown to cause premature convergence to poor local optima when optimizing with gradient-based methods \cite{thomas2017}. The standard BP model cannot be used in the near-wake region because there is a discontinuity due to a negative value in the square-root term of the velocity deficit calculation of the BP wake model as shown in \Cref{eq:bp-vel}. \todo{double check all equations}
 \begin{equation}\label{eq:bp-vel}
 	\frac{\Delta \bar{u}}{\bar{u}_{i}} = \Bigg[1-\sqrt{1-\frac{C_{T} \cos{\gamma}}{8 \sigma_y \sigma_z/d^2}}~\Bigg] \exp{\bigg(-0.5\bigg[\frac{y-\delta}{\sigma_y}\bigg]^2\bigg)}\exp{\bigg(-0.5\bigg[\frac{z-z_h}{\sigma_z}\bigg]^2\bigg)}
 \end{equation}
@@ -95,7 +95,28 @@ where $k_y$ and $k_z$ are the herizontal and vertical wake growth rates (assumed
 \begin{equation}\label{eq:potentialcore}
 	\frac{x_0}{d} = \frac{\cos{\gamma }\Big[1+\sqrt{1-C_T}\Big]}{\sqrt{2} \Big[\alpha ^* I + \beta ^* \Big[1- \sqrt{1-C_T}\Big]\Big]}
 \end{equation}
-where $I$ is the turbulence intensity, $\alpha^*=2.32$, and $\beta^*=0.154$. The discontinuity can occur for various combinations of $k_y$, $k_z$, and $(x-x_0)$. When local turbulence intensity is calculated in the NP wind farm model, as in \cite{niayifar2016} (discussed further in \Cref{sec:npa}), the values of $k_y$ and $k_z$ vary and so the discontinuity is even more mobile than in the original model. We can determine where the model is undefined as follows. First, we know the model is undefined when
+where $I$ is the turbulence intensity, $\alpha^*=2.32$, and $\beta^*=0.154$. 
+
+Wind shear was added to the wake model using a power law defined as
+%
+\begin{equation} \label{eq:shear}
+	u = u_r\bigg[\frac{z-z_o}{z_r-z_o}\bigg]^\psi
+\end{equation}
+%
+where $u_r$ is the reference wind speed, $z$ is the height of interest, $z_r$ is the height at which $u_r$ was measured, $z_o$ is the height of local ground, and $\psi$ is the shear exponent. The value of $\psi$ for comparison to the LES was determined by fitting \Cref{eq:shear} to a series of wind speeds in the LES precursor used for validation. To fit the curve, $z_r$ was set to 80 m to focus on matching the LES values in the rotor area. The appropriate value of $\psi$ for comparison to the LES was determined to be 0.31.
+%0665565.
+The shear exponent fitting plot can be seen in \Cref{fig:shear_fit}
+%
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.5\textwidth]{final_images/shear_fit.pdf}
+	\caption{The calculated wind speed using the power law (\Cref{eq:shear}) with shear exponent $\psi=0.31$ compared with the values obtained from the LES precursor. The reference values used were a height of 80 m with a wind speed of 8 m/s}
+	\label{fig:shear_fit}
+\end{figure}
+%
+\todo{all figures units should be in the format ", unit" rather than "(unit)"}
+
+The discontinuity mentioned previously can occur for various combinations of $k_y$, $k_z$, and $(x-x_0)$. When local turbulence intensity is calculated in the NP wind farm model, as in \cite{niayifar2016} (discussed further in \Cref{sec:npa}), the values of $k_y$ and $k_z$ vary and so the discontinuity is even more mobile than in the original model. We can determine where the model is undefined as follows. First, we know the model is undefined when
 %
 \begin{equation}
 	\frac{C_T \cos{\gamma}}{8\sigma_y \sigma_z/d^2} > 1
@@ -131,25 +152,7 @@ where $\sigma_{y_d}$ and $\sigma_{z_d}$ represent the wake spread at $x_d$. Then
 %
 where $\Delta U_r$ is a pre-determined normalized velocity deficit at the rotor hub. We used a value of $\Delta U_r=\Delta U_{d_m}$. With the linear interpolation method, optimizations succeed even when turbines are placed less than one diameter from each other.
 
-Wind shear was added to the wake model using a power law defined as
-%
-\begin{equation} \label{eq:shear}
-	u = u_r\bigg[\frac{z-z_o}{z_r-z_o}\bigg]^\psi
-\end{equation}
-%
-where $u_r$ is the reference wind speed, $z$ is the height of interest, $z_r$ is the height at which $u_r$ was measured, $z_o$ is the height of local ground, and $\psi$ is the shear exponent. The value of $\psi$ for comparison to the LES was determined by fitting \Cref{eq:shear} to a series of wind speeds in the LES precursor used for validation. To fit the curve, $z_r$ was set to 80 m. The appropriate value of $\psi$ for comparison to the LES was determined to be 0.31.
-%0665565.
-The shear exponent fitting plot can be seen in \Cref{fig:shear_fit}
-%
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=0.75\textwidth]{final_images/shear_fit.pdf}
-	\caption{The calculated wind speed using the power law (\Cref{eq:shear}) with shear exponent $\psi=0.31$ compared with the values obtained from the LES precursor. The reference values used were a height of 80 m with a wind speed of 8 m/s}
-	\label{fig:shear_fit}
-\end{figure}
-%
-
-The results of the model changes discussed above can be seen in \Cref{fig:model_contours}. These changes make the model continuous throughout the domain and differentiable everywhere except at the exact turbine location. With a separation constraint in place, the probability of turbines landing exactly on top of each other is extremely small, as noted in \cite{thomas2017}. While the linear interpolation makes very little attempt to be physically accurate in the near wake, the accuracy of the model for AEP calculation purposes should be unaffected since turbines will almost never be placed close enough together to be in the linear interpolation region in a final design. If greater accuracy is desired in the near wake, it would be feasible to use the linear interpolation during optimization and then switch to a more accurate near wake model for final calculations, such as the one proposed in \cite{keane2016}.
+The results of the model changes discussed above can be seen in \Cref{fig:model_contours}. These changes make the model continuous throughout the domain and differentiable everywhere except at the exact turbine location. With a separation constraint in place, the probability of turbines landing exactly on top of each other is extremely small, as noted in \cite{thomas2017}. While the linear interpolation makes little attempt to be physically accurate in the near wake, the accuracy of the model for AEP calculation purposes should be unaffected since turbines will almost never be placed close enough together to be in the linear interpolation region in a final design. If greater accuracy is desired in the near wake, it would be feasible to use the linear interpolation during optimization and then switch to a more accurate near wake model for final calculations, such as the one proposed in \cite{keane2016}.
 
 \begin{figure}[htbp!]
 	\centering
@@ -359,7 +362,7 @@ For the LES validation, we used the NREL 5-MW reference turbine \cite{jonkman200
 \end{figure}
 
 For the wind frequencies, we chose to use the Nantucket wind rose \cite{wrcc2017} %was selected as an approximation of the wind rose of the new Bay State Wind farm proposed for development off the coast of Massachusetts \cite{baystate2017}
-. From this wind rose, we generated a wind rose with 12 by binning every 3 directions from the original wind rose starting with wind from the North. The original and final wind roses can be seen in \Cref{fig:windrose}.
+. To reduce the compuational cost of the LES simulations, we generated a wind rose with 12 directions by binning every 3 directions from the Nantucket wind rose starting with wind from the North. We used the 12 direction wind rose for both the optimizations and the LES. The original and final wind roses can be seen in \Cref{fig:windrose}.
 
 \begin{figure}[ht]
 	\centering
@@ -392,9 +395,9 @@ The optimization problem was built in OpenMDAO, a Multidisciplinary Design Analy
 
 The gradients of both the objective function and constraints were scaled to be close to order one. The final problem was then solved using SNOPT (Sparse Nonlinear OPTimizer), a gradient-based optimization algorithm that uses a sequential quadratic programming approach. SNOPT was used in this case because it is well suited to non-linear problems with high dimensionality \cite{gill2005}. 
 
-We also used the Wake Expansion Continuation (WEC) method \cite{thomas2018-wec} with the following relaxtion factor values: $[3.00, 2.75, 2.50, 2.25, 2.00, 1.75, 1.5, 1.25, 1.00]$. We neglected local turbulence intensity during the WEC optimization series. After completing the WEC series, we ran one final optimization, from the optimized layout found using WEC. In the final optimization, local turbulence intensity was calculated with the smooth maximum function as in \Cref{eq:smoothmax3}. The local turbulence intensity was ignored during WEC optimization because including local turbulence intensity introduces many more local optima in the design space and the local optima due to the local turbulence intensity calculations are exagerated by WEC. 
+We also used the Wake Expansion Continuation (WEC) method \cite{thomas2018-wec} with relaxation factors from at $3.00$ down to, and including, $1.00$ in steps of $0.25$. We neglected local turbulence intensity during the WEC optimization series. After completing the WEC series, we ran one final optimization, from the optimized layout found using WEC. In the final optimization, local turbulence intensity was calculated with the smooth maximum function as in \Cref{eq:smoothmax3}. The local turbulence intensity was ignored during WEC optimization because including local turbulence intensity introduces many more local optima in the design space and the local optima due to the local turbulence intensity calculations are exagerated by WEC. 
 
-To arrive at the final optimized solution, we optimized from the baseline layout shown in \Cref{fig:starting-layout}, as well as 199 pseudo-random layouts meeting the constraints of the optimization problem.
+To arrive at the final optimized solution, we used a multi-start optimization apprach. Starting locations we used were the baseline layout shown in \Cref{fig:starting-layout}, as well as 199 pseudo-random layouts meeting the constraints of the optimization problem.
 \subsection{Large Eddy Simulation}
 
 \subsubsection{Simulator for Wind Farm Applications}

@@ -1,0 +1,42 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf600
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red192\green237\blue254;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c79369\c94291\c99728;\csgray\c0\c0;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf2 \cb3 WFLOP - you never defined this.\
+\cf0 \cb1 \
+- I\'92m not sure that this paper has to do with gradient-based optimization per se.  Is there some reason to assume that optimal layouts found for one method will be more accurate than the other?  I like the description in the intro, but I don\'92t think it is the central theme and isn\'92t what you should lead off with.  As is it sounds like this paper is going to be about gradient-based versus gradient-free.  Instead the central focus is more about whether benefits obtained from optimization (whether gradient-based or gradient-free) using engineering models translate to real benefits when using high-fidelity simulations.\
+\
+- validated is a strong word (and usually means real-world experimental data)\
+\cf2 \
+- though newer version of [the] BP\cf0 \
+\
+- Seems like there should have been more references on engineering wake model validation, and some discussion on how the layouts used are generally grids and don\'92t contain the same types of patterns seen in \'93optimal\'94 layouts, hence to need to see if \'93optimal\'94 layouts really are so optimal.  By the end of the intro it\'92s not really clear what problem you are trying to solve (other than making the BP model usable in gradient-based optimization which is sort of a side goal and not a main objective).\
+\
+- optimizations succeed even when turbines are placed less than one diameter from each other. - which begs the question for the reader - what about model accuracy?  the model may convergence but if it creates odd incentives that doesn\'92t matter. In other words, you need to motivate why using what you did is a good idea. [I see that you address this later.  Perhaps you should note that or at least partially address it earlier.  If it was me I\'92d probably move the wind shear paragraph to later.  It seems totally unrelated and separates your discussion of here is the change in the model, and here is the consequence.]\
+\
+\cf2 - To fit the curve, zr was set to 80 m. - why?\
+\cf0 \
+\cf2 - Fig 1 seems way too large\cf0 \
+\
+\cf2 - makes very little attempt  - remove very, it\'92s usually unhelpful as a modifier.\cf0 \
+\
+\cf2 - Does Fig 2 need to use a rainbow colorbar?\cf0 \
+\
+- also found this method to be the most accurate - relative to what?\
+\
+-  during final optimization. - what does that mean?  If it means final evaluation (after optimization) then why does matter whether it is smooth or not?  If not that, then I don\'92t know what it means. [later I see this is explained.  you\'92ll have to have some explanation earlier.  It may not even be necessary to do this final optimization...]\
+\
+- we used 100 sampling points  - how did you decide 100 was the right number?\
+\
+- you never discussed 4b or 5b.  Also there seemed to be lacking a \'93so what\'94 or some sort of summary in 5. model verification.\
+\
+\cf2 - with 12 [directions?] by - also you should explain why you reduced the number of bins\cf0 \
+\
+\cf2 - with the following relaxtion factor values: - this is a regular sequence so might be clearer to say something like starting at 3 and ending at 1 with a decrease of 0.25 each iteration.\
+\cf0 \
+\cf2 - you have a 1-sentence paragraph below fig 6\
+\cf0 \
+Overall I\'92d say it was pretty clear.  Mostly minor comments.  I think the main area of improvement is restructuring the intro to clearly motivate and define the central problem and why it matters.  Hopefully NREL\'92s results come through!}
