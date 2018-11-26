@@ -33,6 +33,7 @@
 % \setlength{\parindent}{0cm}
 % \usepackage[margin=1in]{geometry}
 \usepackage{subfigure}
+\usepackage{booktabs} \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
 
 % editing packages
 \usepackage{todonotes}
@@ -288,22 +289,23 @@ To keep the error from the smooth max below 0.001, or about 1\% of the total tur
 % 
 
 \subsubsection{Sampling Over the Rotor-Swept Area}
-Various methods can be used to approximate the effective velocity at the rotor. The ideal method is a full integration across the rotor-swept area. We approximated the integral by sampling the velocity at various points and taking the average. Maximum and average directional error, as compared to the directional power LES results from \cite{niayifar2016}, is shown in \cref{fig:sampling-error}. 
-\begin{figure}[ht]
-	\centering
-	\subfigure[]{
-		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/power_by_dir_vs_rpts_max_error.pdf}
-	}
-    \subfigure[]{
-		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/power_by_dir_vs_rpts_ave_error.pdf}
-	}
-% 	\subfigure[]{
-% 		\includegraphics[width=0.43\textwidth, trim={0cm -1cm 0cm 0cm}]{final_images/bem_distribution.png}
-% 	}
-	\caption{Maximum (a) and average (b) directional power production error for varrying numbers of velocity samples on the rotor-swept area using the BP model as compared to LES results for Horns rev from \cite{niayifar2016}.}
-	\label{fig:sampling-error}
-\end{figure}
-When comparing our code to LES and other data, we used 100 sampling points accross the rotor-swept area arranged in the sunflower seed pattern as shown in \Cref{fig:sampling_locs}(a) to minimize the model error. Using more than 100 points did not significantly alter the results. For efficiency during optimization, we approximated the effective velocity of each wind turbine by using a single sampling point located at the rotor hub as shown in \Cref{fig:sampling_locs}(b).
+Various methods can be used to approximate the effective velocity at the rotor. The ideal method is a full integration across the rotor-swept area. We approximated the integral by sampling the velocity at various points and taking the average. 
+%Maximum and average directional error, as compared to the directional power LES results from \cite{niayifar2016}, is shown in \cref{fig:sampling-error}. 
+%\begin{figure}[ht]
+%	\centering
+%	\subfigure[]{
+%		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/power_by_dir_vs_rpts_max_error.pdf}
+%	}
+%    \subfigure[]{
+%		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/power_by_dir_vs_rpts_ave_error.pdf}
+%	}
+%% 	\subfigure[]{
+%% 		\includegraphics[width=0.43\textwidth, trim={0cm -1cm 0cm 0cm}]{final_images/bem_distribution.png}
+%% 	}
+%	\caption{Maximum (a) and average (b) directional power production error for varrying numbers of velocity samples on the rotor-swept area using the BP model as compared to LES results for Horns rev from \cite{niayifar2016}.}
+%	\label{fig:sampling-error}
+%\end{figure}
+When comparing our code to LES and other data, we used 100 sampling points accross the rotor-swept area arranged in the sunflower seed pattern as shown in \Cref{fig:sampling_locs}(a). We found that 100 sample points on the rotor-swept area was more than sufficient to acheive the level of accuracy demonstrated by Niayifar and Port\'{e}-Agel in \cite{niayifar2016}. For efficiency during optimization, we approximated the effective velocity of each wind turbine by using a single sampling point located at the rotor hub as shown in \Cref{fig:sampling_locs}(b).
 
 \begin{figure}[ht]
 	\centering
@@ -341,15 +343,7 @@ where $N_D$ is the number of wind directions, $N_T$ is the number of wind wind t
 where $\rho$ is the air density, $A_j$ represents the rotor-swept area of turbine $j$, and $C_{P_j}$ is the power coefficient of turbine $j$ for the given effective wind speed at the rotor ($\bar{u}_j$).
 
 \subsubsection{Model Verification}
-To verify our implimentation of the models described, we compared the output of our code with data for the Horns Rev wind farm from Niayifar and Port\'{e}-Agel \cite{niayifar2016} as shown in \Cref{fig:power_line,fig:power_direction}. We calculated error as based on the LES data values from \cite{niayifar2016}. For the Horns Rev row averaging comparison using 100 samples on the rotor-swept area as shown in \Cref{fig:power_line}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $6.2\%$ and a maximum error of $10.9\%$; ignoring local turbulence intensity resulted in an average error of $32.9\%$ and a maximum error of $46.2\%$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $3.4\%$ and a maximum error of $6.7\%$.  For the Horns Rev directional power comparison using 100 samples on the rotor-swept area as shown in \Cref{fig:power_direction}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $3.0\%$ and a maximum error of $7.5\%$; ignoring local turbulence intensity resulted in an average error of $8.4\%$ and a maximum error of $34.6\%$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $2.2\%$ and a maximum error of $7.1\%$. The high errors when local turbulence intensity is ignored are in the directions of highest wake interactions as can be seen in \Cref{fig:power_direction} and do not alter the general trend of the directional power. 
-
-%\begin{tabularx}{\textwidth}{ |X|X|X|X| }\label{tab:np-error-comparison}
-%  \hline
-%  label 1 & label 2 & label 3 & label 4 \\
-%  \hline 
-%  item 1  & item 2  & item 3  & item 4  \\
-%  \hline
-%\end{tabularx}
+To verify our implimentation of the models described, we compared the output of our code with data for the Horns Rev wind farm from Niayifar and Port\'{e}-Agel \cite{niayifar2016} as shown in \Cref{fig:power_line,fig:power_direction}. We calculated error as based on the LES data values from \cite{niayifar2016} and reported the error as compared to the LES in \Cref{tab:validation-error}. For the Horns Rev row averaging comparison using 100 samples on the rotor-swept area as shown in \Cref{fig:power_line}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $6.2\%$ and a maximum error of $10.9\%$; ignoring local turbulence intensity resulted in an average error of $32.9\%$ and a maximum error of $46.2\%$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $3.4\%$ and a maximum error of $6.7\%$.  For the Horns Rev directional power comparison using 100 samples on the rotor-swept area as shown in \Cref{fig:power_direction}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $3.0\%$ and a maximum error of $7.5\%$; ignoring local turbulence intensity resulted in an average error of $8.4\%$ and a maximum error of $34.6\%$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $2.2\%$ and a maximum error of $7.1\%$. The high errors when local turbulence intensity is ignored are in the directions of highest wake interactions as can be seen in \Cref{fig:power_direction} and do not alter the general trend of the directional power. The Horns Rev comparisons using 1 sample on the rotor-swept area are shown in \Cref{fig:power_line}(b) and \Cref{fig:power_direction}(b), with slightly larger errors as reported in \Cref{tab:validation-error}. Based on our model error being within the range reported in \cite{niayifar2016}, we determined that our implementation of the BP and NP models was sufficient and could be used to perform windfarm layout optimization case studies.
 
 \begin{figure}[htbp!]
 	\centering
@@ -375,6 +369,30 @@ To verify our implimentation of the models described, we compared the output of 
 	
 	\label{fig:power_direction}
 \end{figure}
+
+\begin{table*}[htpb!]\centering
+\caption{Model error (in $\%$) as compared to Horn Rev LES data \cite{niayifar2016}}\label{tab:validation-error}
+\ra{1.3}
+\begin{tabular}{@{}llcrcrrcrrcrr@{}}\toprule
+& &\phantom{abc}&  & \phantom{abc} &\multicolumn{2}{c}{No Local TI} &\phantom{abc}& \multicolumn{2}{c}{Hard Max TI} &\phantom{abc}& \multicolumn{2}{c}{Smooth Max TI}\\ 
+\cmidrule{6-7} \cmidrule{9-10} \cmidrule{12-13}
+& &\phantom{abc}&  &  \phantom{abc} & \multicolumn{2}{c}{Samples} & \phantom{abc}&\multicolumn{2}{c}{Samples} & \phantom{abc}&\multicolumn{2}{c}{Samples}\\ 
+
+& & \phantom{abc}& \multicolumn{1}{c}{NP Model} & \phantom{abc} & \multicolumn{1}{c}{100} & \multicolumn{1}{c}{1} & \phantom{abc} &\multicolumn{1}{c}{100} & \multicolumn{1}{c}{1} & \phantom{abc} & \multicolumn{1}{c}{100} & \multicolumn{1}{c}{1}\\ 
+\cmidrule{4-4} \cmidrule{6-7} \cmidrule{9-10} \cmidrule{12-13}
+
+\multicolumn{2}{l}{Directional} & & & & & & & \\
+ \phantom{abc} &  \multicolumn{1}{l}{Max} & & & & & & & \\
+\phantom{abc} &  \multicolumn{1}{l}{Average} & & & & & & & \\
+
+\multicolumn{2}{l}{Row} & & & & & & & \\
+ \phantom{abc} &  \multicolumn{1}{l}{Max} & & & & & & & \\
+\phantom{abc} &  \multicolumn{1}{l}{Average} & & & & & & & \\
+
+ \bottomrule
+\end{tabular}
+
+\end{table*}
 
 \subsection{Test Case}
 
