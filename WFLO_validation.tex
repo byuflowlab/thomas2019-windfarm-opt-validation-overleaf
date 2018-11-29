@@ -527,12 +527,21 @@ Eachcase was set up and run in SOWFA.  The simulations each ran for approximatel
 
 \section{Results and Discussion}
 
-\subsection{Baseline Layout} \todo{fill in this section with LES comparison figures and discussion}
-The 200 starting layouts' AEP is provided in \Cref{fig:opt-distribution}.
+outline
+- difference in results from sampling
+- using 100 sample method for LES comparisons
+- Both the LES and the BP indicate substantial improvements, with LES indicating that BP may be underpredicting the improvement.
+- Low errors for AEP predictions
+- overprestimate AEP for base case
+- underpredicted AEP for opt case 
+- error at each level appears to be averaged out at the next level. Extreme errors for individual turbines (up to 118\%), moderate errors for directional power production (up to 5.5\%), and low errors for AEP (less than 2\%).
+- only 62\% of turbines shown to have changed power based on BP esitmates changed power in the same direction according to LES.
+- power improved in every direction according to both LES and BP
+- Optimized power production in each direction was nearly equal according to BP, more variance in the LES. LES of base case direction had more spread/variation than BP as well.
+- the point is that AEP improvements from otimization were more than validated in the LES.
 
-\subsection{Optimized Layout} \todo{re-outline this section}
+Due to the multi-modal nature of the WFLOP, optimizing with the 200 different starting layouts resulted in a range of AEP values. We recalculated the AEP of each layout using 100 samples across the rotor-swept area. The distributions of AEP values as calculated with 1 and 100 samples across the rotor-swept area respectively are shown in \cref{fig:opt-distribution}. For the remainder of the results analysis we whave used only calculations with 100 samples across the rotor-swept area.
 
-\todo{re-write this section} The 200 starting layouts exhibited a distribution of results demonstrating the highly multi-modal nature of the WFLOP design space. The distribution of the optimization results can be seen in \Cref{fig:opt-distribution}.
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.75\textwidth]{final_images/round_farm_38Turbines_5DSpacing_finish.pdf}
@@ -547,8 +556,6 @@ The 200 starting layouts' AEP is provided in \Cref{fig:opt-distribution}.
 	\label{fig:opt-distribution}
 \end{figure}
 
-Of the 200 starting layouts, the planned starting layout (shown in \Cref{fig:starting-layout}) resulted in the highest AEP. 
-
 \begin{figure}[ht]
 	\centering
 	\subfigure[]{
@@ -560,10 +567,6 @@ Of the 200 starting layouts, the planned starting layout (shown in \Cref{fig:sta
 	\caption{Power production in each direction for SOWFA and the BP wake model using the hard max and 100 samples across the rotor for (a) the base cayout (\Cref{fig:starting-layout}) and (b) the optimized layout (\Cref{fig:optimized-layout}).}
 	\label{fig:dir-power}
 \end{figure}
-
-
-
-\todo{outline LES methods and R\&D sections}
 
 \begin{table*}[htpb!]\centering
 \caption{BP and SOWFA Results}\label{tab:opt-results}
