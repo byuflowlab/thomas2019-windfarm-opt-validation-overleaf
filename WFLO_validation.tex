@@ -26,7 +26,7 @@
 \Crefname{equation}{Eq.}{Eqs.}
 \Crefname{figure}{Fig.}{Figs.}
 %\Crefname{algorithm}{Alg.}{Algs.}
-\Crefname{tabular}{Table}{Tables}
+
 
 % formatting packages
 % \usepackage[parfill]{parskip}
@@ -34,6 +34,8 @@
 % \usepackage[margin=1in]{geometry}
 \usepackage{subfigure}
 \usepackage{booktabs} \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
+\Crefname{tabular}{Table}{Tables}
+\usepackage{multirow}
 
 % editing packages
 \usepackage{todonotes}
@@ -56,6 +58,19 @@
 Recent work has demonstrated that performing wind farm layout optimization with gradient-based optimization methods is possible, but the improvements shown with gradient-based optimization methods have yet to be validated. Validation of the results with simulations or wind tunnel tests is important because the models used during optimization are simple and model characteristics may influence the resulting layouts. In this paper we begin by describing the models used, including changes specific for use with gradient-based optimization. We then compare our version of the models with the original versions and large eddy simulation (LES). Using the models described, we performed gradient-based wind farm layout optimization, using exact gradients, and compare the results to LES simulations. \todo{brief description of results}
 \end{abstract}
 
+\section*{intro outline}
+Word dump:
+optimization, grid, validate, wind farm, gradien-based, improvement, prior LES, prior validation
+
+- Typically grid
+- Typically gradient-free/heuristic methods
+- often unvalidated or compared with only simple models (check on CFD/LES approaches)
+- why not grid? - cite turner
+- why gradient-based?
+- can't compare to real farm
+- can check against wind tunnel or LES
+- LES seen as a wake model?
+- 
 
 \section{Introduction}
 
@@ -371,23 +386,66 @@ To verify our implimentation of the models described, we compared the output of 
 \end{figure}
 
 \begin{table*}[htpb!]\centering
-\caption{Model error (in $\%$) as compared to Horn Rev LES data \cite{niayifar2016}}\label{tab:validation-error}
+\caption{Model error as compared to Horn Rev LES data \cite{niayifar2016}, $\%$.}\label{tab:validation-error}
 \ra{1.3}
-\begin{tabular}{@{}llcrcrrcrrcrr@{}}\toprule
-& &\phantom{abc}&  & \phantom{abc} &\multicolumn{2}{c}{No Local TI} &\phantom{abc}& \multicolumn{2}{c}{Hard Max TI} &\phantom{abc}& \multicolumn{2}{c}{Smooth Max TI}\\ 
-\cmidrule{6-7} \cmidrule{9-10} \cmidrule{12-13}
-& &\phantom{abc}&  &  \phantom{abc} & \multicolumn{2}{c}{Samples} & \phantom{abc}&\multicolumn{2}{c}{Samples} & \phantom{abc}&\multicolumn{2}{c}{Samples}\\ 
+\begin{tabular}{@{}llrcrrcrrcrr@{}}\toprule
+& & & & \multicolumn{2}{c}{No Local TI} &\phantom{a}& \multicolumn{2}{c}{Hard Max TI} &\phantom{a}& \multicolumn{2}{c}{Smooth Max TI}\\ 
+\cmidrule{5-6} \cmidrule{8-9} \cmidrule{11-12}
 
-& & \phantom{abc}& \multicolumn{1}{c}{NP Model} & \phantom{abc} & \multicolumn{1}{c}{100} & \multicolumn{1}{c}{1} & \phantom{abc} &\multicolumn{1}{c}{100} & \multicolumn{1}{c}{1} & \phantom{abc} & \multicolumn{1}{c}{100} & \multicolumn{1}{c}{1}\\ 
-\cmidrule{4-4} \cmidrule{6-7} \cmidrule{9-10} \cmidrule{12-13}
+& &  &  \phantom{a} & \multicolumn{2}{c}{Samples} & \phantom{a}&\multicolumn{2}{c}{Samples} & \phantom{a}&\multicolumn{2}{c}{Samples}\\ 
+% \cmidrule{5-6} \cmidrule{8-9} \cmidrule{11-12}
 
-\multicolumn{2}{l}{Directional} & & & & & & & \\
- \phantom{abc} &  \multicolumn{1}{l}{Max} & & & & & & & \\
-\phantom{abc} &  \multicolumn{1}{l}{Average} & & & & & & & \\
+& & \multicolumn{1}{c}{NP Model} & \phantom{a} & \multicolumn{1}{c}{100} & \multicolumn{1}{c}{1} & \phantom{a} &\multicolumn{1}{c}{100} & \multicolumn{1}{c}{1} & \phantom{a} & \multicolumn{1}{c}{100} & \multicolumn{1}{c}{1} \\ 
+ \cmidrule{3-3} \cmidrule{5-6} \cmidrule{8-9} \cmidrule{11-12}
 
-\multicolumn{2}{l}{Row} & & & & & & & \\
- \phantom{abc} &  \multicolumn{1}{l}{Max} & & & & & & & \\
-\phantom{abc} &  \multicolumn{1}{l}{Average} & & & & & & & \\
+%directional 100 samples
+%NPA ave error 0.0296786273592
+%NPA max error 0.0745257894155
+%no ti ave error 0.0836258338768
+%no ti max error 0.345909818626
+%hard max ave error 0.0218072640989
+%hard max max error 0.0712316953711
+%smooth max ave error 0.0218068160809
+%smooth max max error 0.07123169537
+
+% direcrtional 1 sample
+%NPA ave error 0.0296786273592
+%NPA max error 0.0745257894155
+%no ti ave error 0.106525331926
+%no ti max error 0.44611944797
+%hard max ave error 0.033671620767
+%hard max max error 0.100360069349
+%smooth max ave error 0.0336678189816
+%smooth max max error 0.100360069346
+
+\multicolumn{1}{c|}{\multirow{2}{*}{Directional}}  &  \multicolumn{1}{l}{Max} &7.5 & & 34.6  &44.6  & & 7.1 &10.0  & & 7.1 &10.0\\
+\multicolumn{1}{c|}{} &  \multicolumn{1}{l}{Average} &3.0  & &8.4 &10.7 & & 2.2 &3.4 & & 2.2 &3.4\\
+
+\\
+% line 100 samples
+%error for direction horns rev
+%NPA ave error 0.0628983998487
+%NPA max error 0.109904105447
+%no ti ave error 0.329411860446
+%no ti max error 0.461957029125
+%hard max ave error 0.0335991107649
+%hard max max error 0.0668216761571
+%smooth max ave error 0.0335991107007
+%smooth max max error 0.0668216761571
+
+% line 1 sample
+%NPA ave error 0.0628983998487
+%NPA max error 0.109904105447
+%no ti ave error 0.448075083816
+%no ti max error 0.569478507873
+%hard max ave error 0.107296587394
+%hard max max error 0.310545390294
+%smooth max ave error 0.10729658732
+%smooth max max error 0.310545390294
+
+
+\multicolumn{1}{c|}{\multirow{2}{*}{Row}} &  \multicolumn{1}{l}{Max} & 11.0 & &  46.2 & 57.0 & & 6.7 & 31.1 & &6.7 & 31.1\\
+\multicolumn{1}{c|}{} &  \multicolumn{1}{l}{Average} & 6.3& & 32.9 &44.8 & & 3.4 & 10.7 & & 3.4 & 10.7 \\
 
  \bottomrule
 \end{tabular}
@@ -472,18 +530,6 @@ Eachcase was set up and run in SOWFA.  The simulations each ran for approximatel
 \subsection{Baseline Layout} \todo{fill in this section with LES comparison figures and discussion}
 The 200 starting layouts' AEP is provided in \Cref{fig:opt-distribution}.
 
-\begin{figure}[ht]
-	\centering
-	\subfigure[]{
-		\includegraphics[width=0.98\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/sowfa_compare_pow_by_turb_dir.pdf}
-	}
-	\subfigure[]{
-		\includegraphics[width=0.77\textwidth, trim={1.75cm 0cm -1.75cm 0cm}]{final_images/sowfa_compare_pow_by_dir.pdf}
-	}
-	\caption{(a) Power production error of individual turbines in each direction as compared to SOWFA for the base case layout (\Cref{fig:starting-layout}). (b) Directional power production error as compared to SOWFA for the base case layout (\Cref{fig:starting-layout}).  The colorbar applies to both (a) and (b).}
-	\label{fig:basecase-power-error}
-\end{figure}
-
 \subsection{Optimized Layout} \todo{re-outline this section}
 
 \todo{re-write this section} The 200 starting layouts exhibited a distribution of results demonstrating the highly multi-modal nature of the WFLOP design space. The distribution of the optimization results can be seen in \Cref{fig:opt-distribution}.
@@ -497,13 +543,197 @@ The 200 starting layouts' AEP is provided in \Cref{fig:opt-distribution}.
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.75\textwidth]{final_images/38turbs_results_hist_aep.pdf}
-	\caption{Distribution of optimized AEP results from the 200 optimization runs. The high outlier started from the baseline layout.}
+	\caption{Distribution of AEP improvement calculated with 1 rotor sample point (black) and 100 rotor sample points (blue) from the 200 optimization runs. The high outlier started from the baseline layout. Note that the optimizations were performed using only 1 rotor sample point.}
 	\label{fig:opt-distribution}
 \end{figure}
 
 Of the 200 starting layouts, the planned starting layout (shown in \Cref{fig:starting-layout}) resulted in the highest AEP. 
 
+\begin{figure}[ht]
+	\centering
+	\subfigure[]{
+		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/sowfa_compare_pow_by_dir_base.pdf}
+	}
+	\subfigure[]{
+		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/sowfa_compare_pow_by_dir_opt.pdf}
+	}
+	\caption{Power production in each direction for SOWFA and the BP wake model using the hard max and 100 samples across the rotor for (a) the base cayout (\Cref{fig:starting-layout}) and (b) the optimized layout (\Cref{fig:optimized-layout}).}
+	\label{fig:dir-power}
+\end{figure}
+
+
+
 \todo{outline LES methods and R\&D sections}
+
+\begin{table*}[htpb!]\centering
+\caption{BP and SOWFA Results}\label{tab:opt-results}
+\ra{1.3}
+\begin{tabular}{@{}lcrrrcrrrcrr@{}}\toprule
+& \phantom{a} &\multicolumn{3}{c}{Base Case} &\phantom{a}& \multicolumn{3}{c}{Optimized} &\phantom{a}& \multicolumn{2}{c}{Improvement}\\ 
+\cmidrule{3-5} \cmidrule{7-9} \cmidrule{11-12}
+
+\multicolumn{1}{l}{Dir.} & \phantom{a} & \multicolumn{1}{c}{SOWFA} & \multicolumn{1}{c}{BP} & \multicolumn{1}{c}{Error} & \phantom{a} & \multicolumn{1}{c}{SOWFA} & \multicolumn{1}{c}{BP} & \multicolumn{1}{c}{Error} & \phantom{a} & \multicolumn{1}{c}{SOWFA} & \multicolumn{1}{c}{BP} \\ 
+\cmidrule{1-1} \cmidrule{3-5} \cmidrule{7-9} \cmidrule{11-12}
+
+%for dir: 10
+%sowfa dir pow base, MW 54.5755549375
+%sowfa dir pow opt, MW 63.6788126875
+%bp dir pow base, MW 57.2975053819
+%bp dir pow opt, MW 61.3969619942
+%dir error base 0.049874901823
+%dir error opt -0.0358337506151
+%dir improvment sowfa 0.166801011193
+%dir improvment bp 0.0715468602851
+
+\multicolumn{1}{l}{$10^{\circ}$} & & \SI[per-mode=symbol]{54.6}{\mega\watt} &\SI[per-mode=symbol]{57.3}{\mega\watt} &\SI[per-mode=symbol]{5.0}{\percent} & &\SI[per-mode=symbol]{63.7}{\mega\watt} &\SI[per-mode=symbol]{61.4}{\mega\watt} &\SI[per-mode=symbol]{-3.6}{\percent} & &\SI[per-mode=symbol]{16.7}{\percent} &\SI[per-mode=symbol]{7.2}{\percent} \\
+
+%for dir: 40
+%sowfa dir pow base, MW 56.018788625
+%sowfa dir pow opt, MW 60.8891199375
+%bp dir pow base, MW 55.5160751359
+%bp dir pow opt, MW 61.3612327815
+%dir error base -0.00897401570882
+%dir error opt 0.00775364867338
+%dir improvment sowfa 0.0869410323223
+%dir improvment bp 0.10528766004
+
+\multicolumn{1}{l}{$40^{\circ}$} & & \SI[per-mode=symbol]{56.0}{\mega\watt} &\SI[per-mode=symbol]{55.5}{\mega\watt} &\SI[per-mode=symbol]{-0.9}{\percent} & &\SI[per-mode=symbol]{60.9}{\mega\watt} &\SI[per-mode=symbol]{61.4}{\mega\watt} &\SI[per-mode=symbol]{0.8}{\percent} & &\SI[per-mode=symbol]{8.7}{\percent} &\SI[per-mode=symbol]{10.5}{\percent} \\
+
+%for dir: 70
+%sowfa dir pow base, MW 56.9714324375
+%sowfa dir pow opt, MW 62.5688415
+%bp dir pow base, MW 57.5114463166
+%bp dir pow opt, MW 61.4341340576
+%dir error base 0.00947867827778
+%dir error opt -0.0181353436509
+%dir improvment sowfa 0.098249400147
+%dir improvment bp 0.0682070786286
+
+\multicolumn{1}{l}{$70^{\circ}$} & & \SI[per-mode=symbol]{57.0}{\mega\watt} &\SI[per-mode=symbol]{57.5}{\mega\watt} &\SI[per-mode=symbol]{0.9}{\percent} & &\SI[per-mode=symbol]{62.6}{\mega\watt} &\SI[per-mode=symbol]{61.4}{\mega\watt} &\SI[per-mode=symbol]{-1.8}{\percent} & &\SI[per-mode=symbol]{9.8}{\percent} &\SI[per-mode=symbol]{6.8}{\percent} \\
+
+%for dir: 100
+%sowfa dir pow base, MW 60.855835625
+%sowfa dir pow opt, MW 62.831441
+%bp dir pow base, MW 57.5595700861
+%bp dir pow opt, MW 61.2262961942
+%dir error base -0.0541651512138
+%dir error opt -0.0255468405671
+%dir improvment sowfa 0.032463696451
+%dir improvment bp 0.063703153143
+
+\multicolumn{1}{l}{$100^{\circ}$} & & \SI[per-mode=symbol]{60.9}{\mega\watt} &\SI[per-mode=symbol]{57.6}{\mega\watt} &\SI[per-mode=symbol]{-5.4}{\percent} & &\SI[per-mode=symbol]{62.8}{\mega\watt} &\SI[per-mode=symbol]{61.2}{\mega\watt} &\SI[per-mode=symbol]{-2.6}{\percent} & &\SI[per-mode=symbol]{3.2}{\percent} &\SI[per-mode=symbol]{6.4}{\percent} \\
+
+%for dir: 130
+%sowfa dir pow base, MW 57.493737
+%sowfa dir pow opt, MW 61.6185440625
+%bp dir pow base, MW 58.3991361881
+%bp dir pow opt, MW 61.1745577966
+%dir error base 0.0157477881126
+%dir error opt -0.00720540013874
+%dir improvment sowfa 0.0717435894365
+%dir improvment bp 0.0475250455683
+
+\multicolumn{1}{l}{$130^{\circ}$} & & \SI[per-mode=symbol]{57.5}{\mega\watt} &\SI[per-mode=symbol]{58.4}{\mega\watt} &\SI[per-mode=symbol]{1.6}{\percent} & &\SI[per-mode=symbol]{61.6}{\mega\watt} &\SI[per-mode=symbol]{61.2}{\mega\watt} &\SI[per-mode=symbol]{-0.7}{\percent} & &\SI[per-mode=symbol]{7.2}{\percent} &\SI[per-mode=symbol]{4.8}{\percent} \\
+
+%for dir: 160
+%sowfa dir pow base, MW 56.9407494062
+%sowfa dir pow opt, MW 61.5216024375
+%bp dir pow base, MW 56.9338836297
+%bp dir pow opt, MW 61.2128242171
+%dir error base -0.000120577557852
+%dir error opt -0.00501902109473
+%dir improvment sowfa 0.080449468597
+%dir improvment bp 0.0751563096445
+
+\multicolumn{1}{l}{$160^{\circ}$} & & \SI[per-mode=symbol]{56.9}{\mega\watt} &\SI[per-mode=symbol]{56.9}{\mega\watt} &\SI[per-mode=symbol]{-0.0}{\percent} & &\SI[per-mode=symbol]{61.5}{\mega\watt} &\SI[per-mode=symbol]{61.2}{\mega\watt} &\SI[per-mode=symbol]{-0.5}{\percent} & &\SI[per-mode=symbol]{8.0}{\percent} &\SI[per-mode=symbol]{7.5}{\percent} \\
+
+%for dir: 190
+%sowfa dir pow base, MW 54.07068575
+%sowfa dir pow opt, MW 63.74526175
+%bp dir pow base, MW 56.9132046155
+%bp dir pow opt, MW 61.3955359552
+%dir error base 0.0525704238089
+%dir error opt -0.0368611835648
+%dir improvment sowfa 0.178924603337
+%dir improvment bp 0.078757317744
+
+\multicolumn{1}{l}{$190^{\circ}$} & & \SI[per-mode=symbol]{54.1}{\mega\watt} &\SI[per-mode=symbol]{56.9}{\mega\watt} &\SI[per-mode=symbol]{5.3}{\percent} & &\SI[per-mode=symbol]{63.7}{\mega\watt} &\SI[per-mode=symbol]{61.4}{\mega\watt} &\SI[per-mode=symbol]{-3.7}{\percent} & &\SI[per-mode=symbol]{17.9}{\percent} &\SI[per-mode=symbol]{7.9}{\percent} \\
+
+%for dir: 220
+%sowfa dir pow base, MW 54.7768599375
+%sowfa dir pow opt, MW 62.311719375
+%bp dir pow base, MW 55.7754901851
+%bp dir pow opt, MW 61.3053475038
+%dir error base 0.0182308779428
+%dir error opt -0.0161506034711
+%dir improvment sowfa 0.137555519723
+%dir improvment bp 0.0991449344561
+
+\multicolumn{1}{l}{$220^{\circ}$} & & \SI[per-mode=symbol]{54.8}{\mega\watt} &\SI[per-mode=symbol]{55.8}{\mega\watt} &\SI[per-mode=symbol]{1.8}{\percent} & &\SI[per-mode=symbol]{62.3}{\mega\watt} &\SI[per-mode=symbol]{61.3}{\mega\watt} &\SI[per-mode=symbol]{-1.6}{\percent} & &\SI[per-mode=symbol]{13.8}{\percent} &\SI[per-mode=symbol]{9.9}{\percent} \\
+
+%for dir: 250
+%sowfa dir pow base, MW 59.470990875
+%sowfa dir pow opt, MW 61.88793425
+%bp dir pow base, MW 57.7326222423
+%bp dir pow opt, MW 61.3319085252
+%dir error base -0.0292305308369
+%dir error opt -0.00898439625615
+%dir improvment sowfa 0.0406407113693
+%dir improvment bp 0.0623440637736
+
+\multicolumn{1}{l}{$250^{\circ}$} & & \SI[per-mode=symbol]{59.5}{\mega\watt} &\SI[per-mode=symbol]{57.7}{\mega\watt} &\SI[per-mode=symbol]{-2.9}{\percent} & &\SI[per-mode=symbol]{61.9}{\mega\watt} &\SI[per-mode=symbol]{61.3}{\mega\watt} &\SI[per-mode=symbol]{-0.9}{\percent} & &\SI[per-mode=symbol]{4.1}{\percent} &\SI[per-mode=symbol]{6.2}{\percent} \\
+
+%for dir: 280
+%sowfa dir pow base, MW 57.936899875
+%sowfa dir pow opt, MW 62.844579375
+%bp dir pow base, MW 56.8889908634
+%bp dir pow opt, MW 61.1815554536
+%dir error base -0.0180870742808
+%dir error opt -0.0264624879012
+%dir improvment sowfa 0.0847073196976
+%dir improvment bp 0.0754551016836
+
+\multicolumn{1}{l}{$280^{\circ}$} & & \SI[per-mode=symbol]{57.9}{\mega\watt} &\SI[per-mode=symbol]{56.9}{\mega\watt} &\SI[per-mode=symbol]{-1.8}{\percent} & &\SI[per-mode=symbol]{62.8}{\mega\watt} &\SI[per-mode=symbol]{61.2}{\mega\watt} &\SI[per-mode=symbol]{-2.6}{\percent} & &\SI[per-mode=symbol]{8.5}{\percent} &\SI[per-mode=symbol]{7.5}{\percent} \\
+
+%for dir: 310
+%sowfa dir pow base, MW 58.849970625
+%sowfa dir pow opt, MW 60.786135875
+%bp dir pow base, MW 58.8073143596
+%bp dir pow opt, MW 61.0781349831
+%dir error base -0.00072483070066
+%dir error opt 0.00480371229235
+%dir improvment sowfa 0.0329000206701
+%dir improvment bp 0.0386145949408
+
+\multicolumn{1}{l}{$310^{\circ}$} & & \SI[per-mode=symbol]{58.8}{\mega\watt} &\SI[per-mode=symbol]{58.8}{\mega\watt} &\SI[per-mode=symbol]{-0.1}{\percent} & &\SI[per-mode=symbol]{60.8}{\mega\watt} &\SI[per-mode=symbol]{61.1}{\mega\watt} &\SI[per-mode=symbol]{.5}{\percent} & &\SI[per-mode=symbol]{3.3}{\percent} &\SI[per-mode=symbol]{3.9}{\percent} \\
+
+%for dir: 340
+%sowfa dir pow base, MW 55.0902787812
+%sowfa dir pow opt, MW 64.1653636875
+%bp dir pow base, MW 56.427558609
+%bp dir pow opt, MW 61.2709414163
+%dir error base 0.0242743340089
+%dir error opt -0.0451087955382
+%dir improvment sowfa 0.164731148707
+%dir improvment bp 0.0858336409841
+\multicolumn{1}{l}{$340^{\circ}$} & & \SI[per-mode=symbol]{55.1}{\mega\watt} &\SI[per-mode=symbol]{56.4}{\mega\watt} &\SI[per-mode=symbol]{2.4}{\percent} & &\SI[per-mode=symbol]{64.2}{\mega\watt} &\SI[per-mode=symbol]{61.3}{\mega\watt} &\SI[per-mode=symbol]{-4.5}{\percent} & &\SI[per-mode=symbol]{16.5}{\percent} &\SI[per-mode=symbol]{8.6}{\percent} \\
+
+\hline
+%sowfa aep base, GWh 478.464478387
+%sowfa aep opt, GWh 525.960215588
+%bp aep base, GWh 480.984400368
+%bp aep opt, GWh 516.410850883
+%aep error base 0.00526668560714
+%aep error opt -0.0181560589976
+\multicolumn{1}{l}{AEP}& &\SI[per-mode=symbol]{478}{\giga\watt\hour} &\SI[per-mode=symbol]{481}{\giga\watt\hour} &\SI[per-mode=symbol]{0.5}{\percent} & &\SI[per-mode=symbol]{526}{\giga\watt\hour} &\SI[per-mode=symbol]{516}{\giga\watt\hour} &\SI[per-mode=symbol]{-1.8}{\percent} & &\SI[per-mode=symbol]{9.9}{\percent} &\SI[per-mode=symbol]{7.4}{\percent}\\ 
+%aep improvement sowfa 0.0992670079945
+%aep improvement bp 0.0736540529952
+ \bottomrule
+\end{tabular}
+
+\end{table*}
+
+
 %The final layout with the highest AEP is shown in \Cref{fig:final-layout}.
 
 % \begin{figure}[ht]
@@ -527,6 +757,33 @@ Of the 200 starting layouts, the planned starting layout (shown in \Cref{fig:sta
 % This validation study will help us and other researchers understand how much of the improvement during optimization is real, and not an artifact of the models being used. This in turn will help us know how much improvement is needed based on simplified models to result in meaningful improvements to a real wind farm. 
 
 \section*{Acknowledgements}
+
+\section*{Appendix}
+\begin{figure}[ht]
+	\centering
+	\subfigure[]{
+		\includegraphics[width=0.98\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/sowfa_compare_pow_by_turb_dir_error_base.pdf}
+	}
+	\subfigure[]{
+		\includegraphics[width=0.77\textwidth, trim={1.75cm 0cm -1.75cm 0cm}]{final_images/sowfa_compare_pow_by_dir_error_base.pdf}
+	}
+	\caption{(a) Power production error of individual turbines in each direction as compared to SOWFA for the base case layout (\Cref{fig:starting-layout}). (b) Directional power production error as compared to SOWFA for the base case layout (\Cref{fig:starting-layout}).  The colorbar applies to both (a) and (b).}
+	\label{fig:basecase-power-error}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\subfigure[]{
+		\includegraphics[width=0.98\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/sowfa_compare_pow_by_turb_dir_error_opt.pdf}
+	}
+	\subfigure[]{
+		\includegraphics[width=0.77\textwidth, trim={1.75cm 0cm -1.75cm 0cm}]{final_images/sowfa_compare_pow_by_dir_error_opt.pdf}
+	}
+	\caption{(a) Power production error of individual turbines in each direction as compared to SOWFA for the optimized layout (\Cref{fig:optimized-layout}). (b) Directional power production error as compared to SOWFA for the optimized layout (\Cref{fig:optimized-layout}).  The colorbar applies to both (a) and (b).}
+	\label{fig:optimized-power-error}
+\end{figure}
+
+\clearpage 
 
 \bibliographystyle{unsrt}
 \bibliography{references/all_refs}
