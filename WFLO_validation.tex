@@ -545,7 +545,7 @@ Due to the multi-modal nature of the WFLOP, optimizing with the 200 different st
 
  The AEP improvement calculated by the BP model was 7.4$\%$, while the LES results showed an AEP improvement of 9.9$\%$. This may mean that the BP model is underestimating the improvement. The BP model AEP predictions had errors compared to SOWFA of $0.5\%$ for the base case layout and $-1.8\%$ for the optimized layout. Some of the error, then, seems to be due to the BP model underestimating AEP for the base case layout and overestimating the AEP for the optimized layout.
 
-Comparing AEP predictions and improvement alone is not sufficient, it is important that we investigate the error with more granularity. The directional power production for both SOWFA and the BP model are shown in \cref{fig:dir-power}. The optimized power production in each direction for the optimized layout was nearly equal according to BP, more variance appeared in the SOWFA results. The SOWFA predictions for the base case directions had more spread/variation than BP as well. When we dive a little deeper we find the the directional power predictions had errors ranging from $-5.4\%$ to $5.0\%$ for the base case layout and $-4.5\%$ to $0.8\%$ for the optimized layout, so some of the AEP improvement discrepancy is coming from the BP model underestimating the directional powers more for the optimized layout than the base case layout. The directional powers for the base case layout have generally larger magnitudes than the directional errors for the optimized layout, but the directional errors for the base case layout are more equally distributed in the positive and negative than the directional errors for the optimized layout. Despite the errors, both the BP model and SOWFA predicted increased power production for every direction for the optimized layout as compared to the base case layout. The directional power, AEP, AEP improvement, and corresponding errors are reported in \cref{tab:validation-error}.
+We will now investigate the error with more granularity. The directional power production for both SOWFA and the BP model are shown in \cref{fig:dir-power}. The optimized power production in each direction for the optimized layout was nearly equal according to BP, more variance appeared in the SOWFA results. The SOWFA predictions for the base case directions had more spread/variation than BP as well. When we dive a little deeper we find the the directional power predictions had errors ranging from $-5.4\%$ to $5.0\%$ for the base case layout and $-4.5\%$ to $0.8\%$ for the optimized layout, so some of the AEP improvement discrepancy is coming from the BP model underestimating the directional powers more for the optimized layout than the base case layout. The directional power errors for the base case layout have generally larger magnitudes than the directional errors for the optimized layout, but the directional errors for the base case layout are more equally distributed in the positive and negative than the directional errors for the optimized layout. Despite the errors, both the BP model and SOWFA predicted increased power production for every direction for the optimized layout as compared to the base case layout. The directional power, AEP, AEP improvement, and corresponding errors are reported in \cref{tab:validation-error}.
 %
 \begin{figure}[ht]
 	\centering
@@ -728,17 +728,11 @@ Comparing AEP predictions and improvement alone is not sufficient, it is importa
 \end{table*}
 %
 
-- error at each level appears to be averaged out at the next level. Extreme errors for individual turbines (up to 118\%), moderate errors for directional power production (up to 5.5\%), and low errors for AEP (less than 2\%).
-- only 62\% of turbines shown to have changed power based on BP esitmates changed power in the same direction according to LES.
+Just as the directional errors are larger than the AEP errors, the wind turbine power errors are, in general, much greater than the directional errors. Power production errors for individual turbines ranged from $-27.6\%$ to $96.6\%$ for the base case layout and $-32.9\%$ to $118.4\%$ for the optimized layout. The BP model accurately predicted the direction of the change in power for only $61.6\%$ of the wind turbines. The errors for power production for each turbine in each wind direction are shown the appendix in \cref{fig:optimized-power-error,fig:basecase-power-error}.
 
+We have explored that each time we average turbine powers to get directional power, or average directional power to calculate AEP, the error decreases. The maximum errors at each level are as follows: $118.4\%$ for wind turbine power, $5.4\%$ for directional power, and $1.8\%$ for AEP. This is as expected since we know from statistics that the more samples that are combined to get a result, the more precise that result tends to be \cite{stats book}. We can then place some confidence in AEP results and directional power predictions from the BP model, but power predictions for individual wind turbines have too much error to be trusted individually. It may be argued that if we can't trust the individual wind turbine power predictions, then the wind farm layout optimization can't be trusted either since the optimizer moves the turbines to improve their power and therefor the power of the farm as a whole. However, despite the turbine errors, the BP model still allows the optimizer to reduce wake effects, which is the primary driver for increasing power production in a real wind farm. We have shown that the overall improvements in directional power are not just a factor of the simplified wake model since the improvements are shown to be even greater according to SOWFA simulations.
 
-- the point is that AEP improvements from optimization were more than validated in the LES.
-
-
-
-
-
-
+\section{Conclusion}
 
 
 
