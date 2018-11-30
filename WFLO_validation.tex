@@ -58,34 +58,36 @@
 Recent work has demonstrated that performing wind farm layout optimization with gradient-based optimization methods is possible, but the improvements shown with gradient-based optimization methods have yet to be validated. Validation of the results with simulations or wind tunnel tests is important because the models used during optimization are simple and model characteristics may influence the resulting layouts. In this paper we begin by describing the models used, including changes specific for use with gradient-based optimization. We then compare our version of the models with the original versions and large eddy simulation (LES) data from previous publications. Using the models described, we performed gradient-based wind farm layout optimization, using exact gradients, and compare the results to LES simulations. The models predicted an improvement in annual energy production (AEP) of $7.5\%$, while the LES reported an AEP improvement of $9.9\%$. We conclude that the improvements found using gradient-based optimization with the simple wake model are not just an artifact of the models, but are real improvements.
 \end{abstract}
 
-\section*{intro outline}
-Word dump:
-optimization, grid, validate, wind farm, gradien-based, improvement, prior LES, prior validation
-
-- Typically grid
-- Typically gradient-free/heuristic methods
-- often unvalidated or compared with only simple models (check on CFD/LES approaches)
-- why not grid? - cite turner
-- why gradient-based?
-- can't compare to real farm
-- can check against wind tunnel or LES
-- LES seen as a wake model?
-- 
+%\section*{intro outline}
+%Word dump:
+%optimization, grid, validate, wind farm, gradien-based, improvement, prior LES, prior validation
+%
+%- Typically grid
+%- Typically gradient-free/heuristic methods
+%- often unvalidated or compared with only simple models (check on CFD/LES approaches)
+%- why not grid? - cite turner
+%- why gradient-based?
+%- can't compare to real farm
+%- can check against wind tunnel or LES
+%- LES seen as a wake model?
+%- 
 
 \section{Introduction}
 
+Tyipical wind farm optimization layouts follow grid patterns \cite{chowdhury2012,turner2014-grid-milp-wflo}. The use of grid structures allow optimization methods, especially gradient-free methods, to solve the wind farm layout optimizaiton problem more efficiently. However, unrestricted, or irregular, wind farm layout optimization has become more common (i.e. optimization where wind turbines can be placed anywhere within the boundary, not just in pre-defined grid locations, rows, or similar simplifications) \cite{chowdhury2012,rethore2014,fleming2015,guirguis2016, gebraad2017-max-aep,thomas2017,perez-moreno2018,thomas2018-wec}. Unrestricted wind farm layout optimization has the potential to find more optimal layouts because it avoids the artificial constraints of the grid-like problem formulations \cite{chowdhury2012}. The results of wind farm layout optimization for the grid-like layouts have been previously compared against both wind tunnel data \cite{CITE} and LES simulations \cite{CITE}.  LES, wind tunnel, and even field data have been compared against the models. Wind tunner measurements have also been used to validate unidirectional unrestricted wind farm layout optimization. Comparisons to data or simulations have yet to be performed for multi-directional unrestricted wind farm layout optimization results comparing both the begining and final layouts.
+
 %For an extensive review of the area, refer to Herbert-Acero et al. (2014) \cite{acero2014}. 
- Wind farm layouts are typically optimized using gradient-free optimization methods. However, grandient-free optimization methods exhibit reduced performance when applied to high dimensional problems \cite{rios2013-grad-free-comparison}. In \cite{rios2013-grad-free-comparison}, most gradient-free solvers were unable to solve more than $15\%$ of the test problems studied with 10-30 design variables, while the best methods tested could solve only $28\%$ of the test problems with 31-300 design variables. New wind farms can include well over 100 turbines, meaning over 200 variables and thousands of constraints. In short, the variables and constraints of the wind farm layout optimization problems (WFLOPs) of interest exceed the abilities of gradient-free optimization methods.
+ Wind farm layouts are typically optimized using gradient-free optimization methods. However, grandient-free optimization methods exhibit reduced performance when applied to high dimensional problems \cite{rios2013-grad-free-comparison}. In \cite{rios2013-grad-free-comparison}, most gradient-free solvers were unable to solve more than $15\%$ of the test problems studied with 10-30 design variables, while the best methods tested could solve only $28\%$ of the test problems with 31-300 design variables. New wind farms can include well over 100 turbines, meaning that unrestricted wind farm layout optimization problems can have well over 200 variables and thousands of constraints. In short, the variables and constraints of the unrestricted wind farm layout optimization problems (WFLOPs) of interest exceed the abilities of gradient-free optimization methods.
 
 In contrast to gradient-free optimization methods, some gradient-based methods can solve problems with thousands of variables and constraints \cite{gill2005}. However, gradient-based methods are prone to premature convergence when used with multi-modal problems, such as the WFLOP \cite{acero2014}. Because of the tendency to converge to local optima in multi-modal problems, gradient-based optimization methods have not historically been seen as viable for solving the WFLOP. However, recent studies have demonstrated that significant improvements to wind farm layouts, if not global optimality, can be obtained by using gradient-based methods either alone \cite{fleming2015, guirguis2016, gebraad2017-max-aep, thomas2017, thomas2018-wec},  or with gradient-free methods in a hybrid approach \cite{rethore2014}. 
-
-While the recent results to WFLOPs obtained using gradient-based optimization are promising, it is important to confirm that improvements obtained during optimization are not merely artifacts of the simplified models being used during optimization. Comparing various layouts within a single wind farm is problematic. It is unrealistic to build a wind farm multiple times to test various designs, so we are left with wind tunnel testing and large eddy simulations (LES). In this work we have validated the optimized results using LES.
 
 Solving a WFLOP requires several different types of models. Two of the most important of these are the wake model and the farm model. Generally speaking, wind turbine wake models define the wind speed in a turbine wake given a set of inflow conditions, while farm models combine the wakes of various turbines to determine the cumulative effects of the wakes of multiple turbines. Many different wind turbine wake and wind farm models have been presented, all with varying levels of accuracy and computational cost. Many of the wake models, such as the ``tophat" Jensen/Park model \cite{jensen1983}, the Frandsen model \cite{frandsen2006}, and the original FLORIS model \cite{gebraad2014}, have regions of non-physical zero-valued gradients, where their gradients go to zero while the gradients of the real design space do not. If a model with non-physical zero-valued gradients is used with gradient-based optimization, the optimization may converge to an especially poor local optimum due to the lack of information provided in the gradients \cite{thomas2017}.
 
 The Bastankhah and Port\'{e}-Agel (BP) wake model presented in \cite{bastankhah2014, bastankhah2016} is well suited to gradient-based optimization, with the exception of the near wake region. Most of the BP model is smooth, continuous, and free from flat regions, but the near wake defition of the BP model can be either flat or undefined. The near wake region is rarely needed for evaluating a wind farm since wind turbines are usually placed far enough from each other that they are in the far wake. While the final wind farm design may not place turbines in the near wake, it is important to have the near wake region defined and non-flat during gradient-based optimization because optimization algorithms may attempt infeasible solutions during the optimization process \cite{belegundu2011} and the near wake region of the BP model may not be outside the defined optimization constraints. The BP wake model uses a Gaussian distribution to define the rest of the wake, and is easily applied to different turbines since it only has one independent parameter. Building on the BP wake model, Niayifar and Port\'{e}-Agel (NP) have proposed a farm model \cite{niayifar2015, niayifar2016} to be used in concert with the BP wake model as published in 2014 that also makes the one independent variable dependent on turbulence intensity \cite{bastankhah2014}, though newer version of BP wake model was published in 2016 \cite{bastankhah2016}. In this study we use the NP farm model with the 2016 version of the BP wake model. While the NP model seems to provide good agreement with LES data, there are some minor problems with the NP farm model for use with gradient-based optimization that need to be addressed.
 
-In this work, we address the lack of near wake definition in the BP wake model for the purposes of using gradient-based optimization methods to solve the WFLOP. We then apply the NP wind farm model with some adjustments and obtain exact gradients across the entire system. Finally, we solve the WFLOP using a gradient-based approach and demonstrate the validity of the optimized result using LES.
+While the recent results to unrestricted WFLOPs obtained using simple models and gradient-based optimization methods are promising, it is important to confirm that improvements obtained during optimization are not merely artifacts of the simplified models being used during optimization. Comparing various layouts within a single wind farm is problematic. It is unrealistic to build a wind farm multiple times to test various designs, so we are left with wind tunnel testing and large eddy simulations (LES).
+
+ In this work we have compared the optimized results using to LES simulations. We address the lack of near wake definition in the BP wake model for the purposes of using gradient-based optimization methods to solve the WFLOP. We then apply the NP wind farm model with some adjustments and obtain exact gradients across the entire system. Finally, we solve the WFLOP using a gradient-based approach and demonstrate the validity of the optimized result using LES.
 
 \section{Methods}
 
@@ -130,7 +132,6 @@ The shear exponent fitting plot can be seen in \Cref{fig:shear_fit}
 	\label{fig:shear_fit}
 \end{figure}
 %
-\todo{all figures units should be in the format ", unit" rather than "(unit)"}
 
 The discontinuity mentioned previously can occur for various combinations of $k_y$, $k_z$, and $(x-x_0)$. When local turbulence intensity is calculated in the NP wind farm model, as in \cite{niayifar2016} (discussed further in \Cref{sec:npa}), the values of $k_y$ and $k_z$ vary and so the discontinuity is even more mobile than in the original model. We can determine where the model is undefined as follows. First, we know the model is undefined when
 %
@@ -206,7 +207,7 @@ Where $I$ is the turbulence intensity (TI). This model is only valid for TI valu
 
 We used three different approaches to calculating TI at various points in the optimization process: (1)  ambient TI only, (2) local TI with a smooth maximum function, and (3) local TI with a hard maximum function as done by Niayifar and Port\'{e}-Agel \cite{niayifar2016}. As will be discussed later, we used wake expansion continuation (WEC) as part of our optimization process. Calculating TI with methods (2) and (3) add additional local optima that are exagerated when using WEC, these additional local optima drastically reduce the effectiveness of the WEC method. Because of the negative interactions of the local TI calculations and WEC, we chose to neglect local TI during our WEC optimization series (TI method (1)). After completing the WEC optimization series we ran a final optimization using TI method (2). We used TI method (3) for final wind farm assessment.
 
-The algorithm for calculating local turbulence intensity using the hard maximum function, TI method (3), is given in \Cref{alg:ti}. In our code implementation, we combined the nested loops used for the velocity and turbulence intensity calculations. \todo{check the algorithm and update as needed}
+The algorithm for calculating local turbulence intensity using the hard maximum function, TI method (3), is given in \Cref{alg:ti}. In our code implementation, we combined the nested loops used for the velocity and turbulence intensity calculations. \todo{double check the algorithm and update if needed}
 %
 \begin{algorithm}[htpb!]
 	\caption{Turbulence Intensity Calculation (for more information, see \cite{niayifar2016})}
@@ -758,6 +759,9 @@ Future work should include further analysis of the individual wind turbine power
 % This validation study will help us and other researchers understand how much of the improvement during optimization is real, and not an artifact of the models being used. This in turn will help us know how much improvement is needed based on simplified models to result in meaningful improvements to a real wind farm. 
 
 \section*{Acknowledgements}
+
+This conference paper was developed based, in part, on funding from the Alliance for Sustainable Energy, LLC, Managing and Operating Contractor for the National Renewable Energy Laboratory for the US Department of Energy. The BYU authors’ work was partially supported by the National Science Foundation under Grant No. 1539384.
+
 A portion of the research was performed using computational resources sponsored by the Department of Energy's Office of Energy Efficiency and Renewable Energy and located at the National Renewable Energy Laboratory. A portion of the research was performed using computational resources of the Fulton Supercomputing Lab located at Brigham Young University.
 
 \section*{Appendix}
