@@ -55,7 +55,7 @@
 \maketitle
 
 \begin{abstract}
-Recent work has demonstrated that performing wind farm layout optimization with gradient-based optimization methods is possible, but the improvements shown with gradient-based optimization methods have yet to be validated. Validation of the results with simulations or wind tunnel tests is important because the models used during optimization are simple and model characteristics may influence the resulting layouts. In this paper we begin by describing the models used, including changes specific for use with gradient-based optimization. We then compare our version of the models with the original versions and large eddy simulation (LES). Using the models described, we performed gradient-based wind farm layout optimization, using exact gradients, and compare the results to LES simulations. \todo{brief description of results}
+Recent work has demonstrated that performing wind farm layout optimization with gradient-based optimization methods is possible, but the improvements shown with gradient-based optimization methods have yet to be validated. Validation of the results with simulations or wind tunnel tests is important because the models used during optimization are simple and model characteristics may influence the resulting layouts. In this paper we begin by describing the models used, including changes specific for use with gradient-based optimization. We then compare our version of the models with the original versions and large eddy simulation (LES) data from previous publications. Using the models described, we performed gradient-based wind farm layout optimization, using exact gradients, and compare the results to LES simulations. The models predicted an improvement in annual energy production (AEP) of $7.5\%$, while the LES reported an AEP improvement of $9.9\%$. We conclude that the improvements found using gradient-based optimization with the simple wake model are not just an artifact of the models, but are real improvements.
 \end{abstract}
 
 \section*{intro outline}
@@ -541,13 +541,6 @@ Due to the multi-modal nature of the WFLOP, optimizing with the 200 different st
 	\includegraphics[width=0.75\textwidth]{final_images/round_farm_38Turbines_5DSpacing_finish.pdf}
 	\caption{Optimized wind farm layout. The circles marking turbine locations are to scale, with diameters equal to the rotor diameter.}
 	\label{fig:optimized-layout}
-\end{figure}
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=0.75\textwidth]{final_images/38turbs_results_hist_aep.pdf}
-	\caption{Distribution of AEP improvement calculated with 1 rotor sample point (black) and 100 rotor sample points (blue) from the 200 optimization runs. The high outlier started from the baseline layout. Note that the optimizations were performed using only 1 rotor sample point.}
-	\label{fig:opt-distribution}
 \end{figure}
 
 We will now investigate the error with more granularity. The directional power production for both SOWFA and the BP model are shown in \cref{fig:dir-power}. The optimized power production in each direction for the optimized layout was nearly equal according to BP, more variance appeared in the SOWFA results. The SOWFA predictions for the base case directions had more spread/variation than BP as well. When we dive a little deeper we find the the directional power predictions had errors ranging from $-5.4\%$ to $5.0\%$ for the base case layout and $-4.5\%$ to $0.8\%$ for the optimized layout, so some of the AEP improvement discrepancy is coming from the BP model underestimating the directional powers more for the optimized layout than the base case layout. The directional power errors for the base case layout have generally larger magnitudes than the directional errors for the optimized layout, but the directional errors for the base case layout are more equally distributed in the positive and negative than the directional errors for the optimized layout. Despite the directional errors, both the BP model and SOWFA predicted increased power production for every direction for the optimized layout as compared to the base case layout. The directional power, AEP, AEP improvement, and corresponding errors are reported in \cref{tab:validation-error}.
