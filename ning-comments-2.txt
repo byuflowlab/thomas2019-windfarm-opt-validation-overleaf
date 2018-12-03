@@ -1,0 +1,46 @@
+nice work.  most of these comments are minor clarification or some organizational improvements.
+
+- "but the improvements shown with gradient-based optimization methods have yet to be validated." - I'm not sure it has anything to do with gradient-based personally.  I think it's just a difference between grid-based or other simple layouts used in past validation studies and the layouts that result from optimization (whether that can from gradient-based or gradient free).  
+- missing refs
+
+- I didn't read the intro since you are working on it.
+
+- I don't have any suggestions (not sure if it can be improved), but it's a bit cumbersome working from 1-4 as eq 1 has a lot of variables you define, as defined in 2 and 3, with a bunch more stuff, as defined in 4.
+
+- You might need to redefine BP and NP in methods.  It is a bit hard to keep track.
+
+- The model, then, is undefined for regions where - why is there an empty space after this paragraph.  This doesn't happen elsewhere.
+
+- i'm curious about this linear deficit method.  Doesn't that mean that the deficit could be so large that it was larger than uinf and it (unrealistically) predicted a flow reversal?
+
+- As will be discussed later, we used wake expansion continuation (WEC) as part of our optimization process - include citation.  no one knows what WEC is at this point.
+
+- The subsequent discussion on TI and WEC is perhaps out of place (or WEC needs to be introduced).  It's hard to parse if you don't already know what both of these are and you haven't talked about WEC at all and you only just barely introduced TI but haven't discussed it yet.  I'd talk about this later.  it's really part of your optimization methodology and not your wake model. (and you actually do talk about this later anyway)
+
+- with a smooth maximum function - what smooth max function (I see that this comes later).  Again, seems a bit out of order.  Can you walk the reader through why you need three approaches to compute TI (I understand but it's not clear from reading), and what the implications are.  [I see that this also comes later - again suggesting some reordering would be helpful]
+
+- Model verification section is hard to parse.  Lots of numbers and similar phrases.  The errors seem much larger than the pictures suggest.  What is this error relative to?  
+
+- The Horns Rev comparisons using 1 sample  - one sample
+
+-  within the range reported in [20], - which is?
+
+- Fig 4, can you explain the legends in your caption.  Every time I see these figures I have a hard time figuring out which dataset is what.
+
+- of 5 times the rotor diameter - five times
+
+- precursor vs pre-cursor.  both are used in this paper
+
+- Simulation Scenarios - i'm not sure there needs to be two separate subsubsections here.  Some of the data in this section is new, and some is just repeated.
+
+- For the remainder of the results analysis we have used only calculations with 100 samples across the rotor-swept area - this is confusing because you say optimization only uses 1 sample.
+
+- The optimized power production in each direction for the optimized layout was nearly equal according to BP, more variance appeared in the SOWFA results - can you perhaps quantify this
+
+- are shown [in] the appendix 
+
+- we know from statistics that the more samples that are combined to get a result,  - this is rather loose wording.  I (think) you are referring to the law of large numbers, 
+
+- We have shown that the overall improvements in directional power are not just a factor of the simplified wake model since the AEP improvement is shown to be even greater according to SOWFA simulations than predicted by the BP model. - for this one case.  eventually we need to look at more cases.  this circular case keeps things pretty spread out so it doesn't actually look that different from a staggered grid.
+
+- ability of gradient-based optimization - I"d omit gradient-based.  Again similar things should work for gradient-free.  not all gradient-free approaches stick with grids.
