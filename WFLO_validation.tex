@@ -119,7 +119,7 @@ The Bastankhah and Port\'{e}-Agel (BP) wake model presented in \cite{bastankhah2
 \section{Methods}
 
 \subsection{Wake Model}
-While the Bastankhah and Port\'{e}-Agel (BP) wake model exhibits many characteristics necessary for use with gradient-based optimization, there are some small problems that must be overcome. First, the main BP model is undefined from the turbine location up to several diameters downstream of the the wind turbine. Bastankhah and Port\'{e}-Agel suggested using regions of constant velocity in the near wake \cite{bastankhah2016}, but using regions of constant velocity in the wind turbine wake has been shown to cause premature convergence to poor local optima when optimizing with gradient-based methods \cite{thomas2017}. The standard BP model cannot be used in the near-wake region because there is a discontinuity due to a negative value in the square-root term of the velocity deficit calculation of the BP wake model as shown in \Cref{eq:bp-vel}. \todo{double check all equations}
+While the Bastankhah and Port\'{e}-Agel (BP) wake model exhibits many characteristics necessary for use with gradient-based optimization, there are some small problems that must be overcome. First, the main BP model is undefined from the turbine location up to several diameters downstream of the the wind turbine. Bastankhah and Port\'{e}-Agel suggested using regions of constant velocity in the near wake \cite{bastankhah2016}, but using regions of constant velocity in the wind turbine wake has been shown to cause premature convergence to poor local optima when optimizing with gradient-based methods \cite{thomas2017}. The standard BP model cannot be used in the near-wake region because there is a discontinuity due to a negative value in the square-root term of the velocity deficit calculation of the BP wake model as shown in \Cref{eq:bp-vel}. 
 \begin{equation}\label{eq:bp-vel}
 	\frac{\Delta u_{ij}}{\bar{u}_{i}} = \Bigg[1-\sqrt{1-\frac{C_{T} \cos{\gamma}}{8 \sigma_y \sigma_z/d^2}}~\Bigg] \exp{\bigg(-0.5\bigg[\frac{y-\delta}{\sigma_y}\bigg]^2\bigg)}\exp{\bigg(-0.5\bigg[\frac{z-z_h}{\sigma_z}\bigg]^2\bigg)}
 \end{equation}
@@ -230,7 +230,7 @@ Niayifar and Port\'{e}-Agel calculated local turbulence intensity using the mode
 %
 Where $I$ is the turbulence intensity (TI). This model is only valid for TI values between 0.065 and 0.15. While the initial BP wake model does not include TI \cite{bastankhah2014}, TI was included by Bastankhah and Port\'{e}-Agel in their 2016 version of the model \cite{bastankhah2016}. We used the same TI values for the BP 2016 wake model and the NP wind farm model. 
 
-The algorithm for calculating local turbulence intensity using the hard maximum function is given in \Cref{alg:ti}. In our code implementation, we combined the nested loops used for the velocity and turbulence intensity calculations. \todo{double check the algorithm and update if needed}
+The algorithm for calculating local turbulence intensity using the hard maximum function is given in \Cref{alg:ti}. In our code implementation, we combined the nested loops used for the velocity and turbulence intensity calculations. 
 %
 \begin{algorithm}[htpb!]
 	\caption{Turbulence Intensity Calculation (for more information, see \cite{niayifar2016})}
