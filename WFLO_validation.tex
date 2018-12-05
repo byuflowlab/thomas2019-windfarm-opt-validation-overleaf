@@ -383,7 +383,7 @@ where $N_D$ is the number of wind directions, $N_T$ is the number of wind wind t
 where $\rho$ is the air density, $A_j$ represents the rotor-swept area of turbine $j$, and $C_{P_j}$ is the power coefficient of turbine $j$ for the given effective wind speed at the rotor ($\bar{u}_j$).
 
 \subsubsection{Model Verification}
-To verify our implementation of the models described, we compared the output of our code with data for the Horns Rev wind farm from Niayifar and Port\'{e}-Agel \cite{niayifar2016} as shown in \Cref{fig:power_line,fig:power_direction}. We calculated error as based on the LES data values from \cite{niayifar2016} and reported the error as compared to the LES in \Cref{tab:validation-error}. For the Horns Rev row averaging comparison using 100 samples on the rotor-swept area as shown in \Cref{fig:power_line}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $6.2\%$ and a maximum error of $10.9\%$; ignoring local turbulence intensity resulted in an average error of $32.9\%$ and a maximum error of $46.2\%$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $3.4\%$ and a maximum error of $6.7\%$.  For the Horns Rev directional power comparison using 100 samples on the rotor-swept area as shown in \Cref{fig:power_direction}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $3.0\%$ and a maximum error of $7.5\%$; ignoring local turbulence intensity resulted in an average error of $8.4\%$ and a maximum error of $34.6\%$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $2.2\%$ and a maximum error of $7.1\%$. The high errors when local turbulence intensity is ignored are in the directions of highest wake interactions as can be seen in \Cref{fig:power_direction} and do not alter the general trend of the directional power. The Horns Rev comparisons using 1 sample on the rotor-swept area are shown in \Cref{fig:power_line}(b) and \Cref{fig:power_direction}(b). Using only 1 sample on the rotor-swept area resulted in slightly larger errors as reported in \Cref{tab:validation-error}. Based on our model error being within the range reported in \cite{niayifar2016} when we used 100 samples (less than $11.0\%$ and $7.5\%$ for the row and directional comparisons respectively), we determined that our implementation of the BP wake and NP farm models was sufficient and could be used to perform wind farm layout optimization case studies.
+To verify our implementation of the models described, we compared the output of our code with data for the Horns Rev wind farm from Niayifar and Port\'{e}-Agel \cite{niayifar2016} as shown in \Cref{fig:power_line,fig:power_direction}. We calculated error, in normalized power, based on the LES data values from \cite{niayifar2016} and reported the error in \Cref{tab:validation-error}. For the Horns Rev row averaging comparison using 100 samples on the rotor-swept area as shown in \Cref{fig:power_line}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $0.034$ and a maximum error of $0.057$; ignoring local turbulence intensity resulted in an average error of $0.179$ and a maximum error of $0.253$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $0.018$ and a maximum error of $0.035$.  For the Horns Rev directional power comparison using 100 samples on the rotor-swept area as shown in \Cref{fig:power_direction}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $0.022$ and a maximum error of $0.055$; ignoring local turbulence intensity resulted in an average error of $0.058$ and a maximum error of $0.206$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $0.017$ and a maximum error of $0.053$. The high directional errors when local turbulence intensity is ignored are in the directions of highest wake interactions as can be seen in \Cref{fig:power_direction} and do not alter the general trend of the directional power. The Horns Rev comparisons using 1 sample on the rotor-swept area are shown in \Cref{fig:power_line}(b) and \Cref{fig:power_direction}(b). Using only 1 sample on the rotor-swept area resulted in slightly larger errors as reported in \Cref{tab:validation-error}. Based on our model error being within the range reported in \cite{niayifar2016} when we used 100 samples and local TI (less than $0.057$ and $0.055$ for the row and directional comparisons respectively), we determined that our implementation of the BP wake and NP farm models was sufficient and could be used to perform wind farm layout optimization case studies.
 
 \begin{figure}[htbp!]
 	\centering
@@ -411,7 +411,7 @@ To verify our implementation of the models described, we compared the output of 
 \end{figure}
 
 \begin{table*}[htpb!]\centering
-\caption{Model error as compared to Horn Rev LES data \cite{niayifar2016}, $\%$.}\label{tab:validation-error}
+\caption{Normalized model power error as compared to Horn Rev LES results \cite{niayifar2016}.}\label{tab:validation-error}
 \ra{1.3}
 \begin{tabular}{@{}llrcrrcrrcrr@{}}\toprule
 & & & & \multicolumn{2}{c}{No Local TI} &\phantom{a}& \multicolumn{2}{c}{Hard Max TI} &\phantom{a}& \multicolumn{2}{c}{Smooth Max TI}\\ 
@@ -424,53 +424,56 @@ To verify our implementation of the models described, we compared the output of 
  \cmidrule{3-3} \cmidrule{5-6} \cmidrule{8-9} \cmidrule{11-12}
 
 %directional 100 samples
-%NPA ave error 0.0296786273592
-%NPA max error 0.0745257894155
-%no ti ave error 0.0836258338768
-%no ti max error 0.345909818626
-%hard max ave error 0.0218072640989
-%hard max max error 0.0712316953711
-%smooth max ave error 0.0218068160809
-%smooth max max error 0.07123169537
+%error for direction horns rev - not percent
+%NPA ave error 0.0224456601583
+%NPA max error 0.0548174348544
+%no ti ave error 0.0580638689657
+%no ti max error 0.206232309586
+%hard max ave error 0.0167584587067
+%hard max max error 0.0525671878498
+%smooth max ave error 0.0167580458573
+%smooth max max error 0.052567187849
 
 % direcrtional 1 sample
-%NPA ave error 0.0296786273592
-%NPA max error 0.0745257894155
-%no ti ave error 0.106525331926
-%no ti max error 0.44611944797
-%hard max ave error 0.033671620767
-%hard max max error 0.100360069349
-%smooth max ave error 0.0336678189816
-%smooth max max error 0.100360069346
+%error for direction horns rev - not percent
+%NPA ave error 0.0224456601583
+%NPA max error 0.0548174348544
+%no ti ave error 0.0738947693338
+%no ti max error 0.265977544296
+%hard max ave error 0.0248056484519
+%hard max max error 0.0721467766148
+%smooth max ave error 0.0248023899965
+%smooth max max error 0.0721467766137
 
-\multicolumn{1}{c|}{\multirow{2}{*}{Directional}}  &  \multicolumn{1}{l}{Max} &7.5 & & 34.6  &44.6  & & 7.1 &10.0  & & 7.1 &10.0\\
-\multicolumn{1}{c|}{} &  \multicolumn{1}{l}{Average} &3.0  & &8.4 &10.7 & & 2.2 &3.4 & & 2.2 &3.4\\
+\multicolumn{1}{c|}{\multirow{2}{*}{Directional}}  &  \multicolumn{1}{l}{Max} &0.055 & & 0.206 &0.266  & & 0.053 &0.072  & & 0.053 & 0.072\\
+\multicolumn{1}{c|}{} &  \multicolumn{1}{l}{Average} &0.022  & &0.058 &0.074 & & 0.017 &0.025 & & 0.017 &0.025\\
 
 \\
 % line 100 samples
-%error for direction horns rev
-%NPA ave error 0.0628983998487
-%NPA max error 0.109904105447
-%no ti ave error 0.329411860446
-%no ti max error 0.461957029125
-%hard max ave error 0.0335991107649
-%hard max max error 0.0668216761571
-%smooth max ave error 0.0335991107007
-%smooth max max error 0.0668216761571
+%error for direction horns rev - not percent
+%NPA ave error 0.0343720467811
+%NPA max error 0.0568312420913
+%no ti ave error 0.178899266747
+%no ti max error 0.252759908164
+%hard max ave error 0.0181504489593
+%hard max max error 0.0345533848729
+%smooth max ave error 0.0181504489244
+%smooth max max error 0.0345533848729
 
-% line 1 sample
-%NPA ave error 0.0628983998487
-%NPA max error 0.109904105447
-%no ti ave error 0.448075083816
-%no ti max error 0.569478507873
-%hard max ave error 0.107296587394
-%hard max max error 0.310545390294
-%smooth max ave error 0.10729658732
-%smooth max max error 0.310545390294
+% 1 sample
+%error for direction horns rev - not percent
+%NPA ave error 0.0343720467811
+%NPA max error 0.0568312420913
+%no ti ave error 0.242767970086
+%no ti max error 0.311590313116
+%hard max ave error 0.0575680259789
+%hard max max error 0.160582538608
+%smooth max ave error 0.0575680259386
+%smooth max max error 0.160582538608
 
 
-\multicolumn{1}{c|}{\multirow{2}{*}{Row}} &  \multicolumn{1}{l}{Max} & 11.0 & &  46.2 & 57.0 & & 6.7 & 31.1 & &6.7 & 31.1\\
-\multicolumn{1}{c|}{} &  \multicolumn{1}{l}{Average} & 6.3& & 32.9 &44.8 & & 3.4 & 10.7 & & 3.4 & 10.7 \\
+\multicolumn{1}{c|}{\multirow{2}{*}{Row}} &  \multicolumn{1}{l}{Max} & 0.057 & & 0.253 & 0.312 & & 0.035 & 0.161 & & 0.035 & 0.161\\
+\multicolumn{1}{c|}{} &  \multicolumn{1}{l}{Average} & 0.034 & & 0.179 &0.243 & & 0.018 & 0.058 & & 0.018 & 0.058 \\
 
  \bottomrule
 \end{tabular}
