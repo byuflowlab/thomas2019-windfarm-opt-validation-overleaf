@@ -194,7 +194,7 @@ In \Cref{eq:gauss-mag}, $\sigma_{y_d}$ and $\sigma_{z_d}$ represent the wake spr
 %
 In \Cref{eq:bplinear}, $\Delta U_r$ is a predetermined normalized velocity deficit at the rotor hub. To avoid overpredicting the velocity deficits and potentially causing an unrealistic flow reversal,  we used a value of $\Delta U_r=\Delta U_{d_m}$. 
 
-The results of the model changes discussed above are shown in \Cref{fig:model_contours}. These changes make the model continuous throughout the domain and differentiable everywhere except at the exact turbine location. With a separation constraint in place, the probability of turbines landing exactly on top of each other is extremely small, as noted in \cite{thomas2017}. With the linear interpolation method, optimizations succeed even when turbines are placed less than one diameter from each other. While the linear interpolation makes little attempt to be physically accurate in the near-wake, the accuracy of the model for AEP calculation purposes should be unaffected since turbines will almost never be placed close enough together to be in the linear interpolation region in a final design. If greater accuracy is desired in the near-wake, it would be feasible to use the linear interpolation during optimization and then switch to a more accurate near-wake model for final calculations, such as the one proposed in \cite{keane2016}.
+The results of the model changes discussed above are shown in \Cref{fig:model_contours}. These changes make the model continuous throughout the domain and differentiable everywhere except at the exact turbine location. With a separation constraint in place, the probability of turbines landing exactly on top of each other is extremely small, as noted in \cite{thomas2017}. With the linear interpolation method, optimizations succeed even when turbines are placed less than 1 diameter from each other. While the linear interpolation makes little attempt to be physically accurate in the near-wake, the accuracy of the model for AEP calculation purposes should be unaffected since turbines will almost never be placed close enough together to be in the linear interpolation region in a final design. If greater accuracy is desired in the near-wake, it would be feasible to use the linear interpolation during optimization and then switch to a more accurate near-wake model for final calculations, such as the one proposed in \cite{keane2016}.
 
 \begin{figure}[htbp!]
 	\centering
@@ -204,25 +204,25 @@ The results of the model changes discussed above are shown in \Cref{fig:model_co
 	\subfigure[]{
 		\includegraphics[width=0.75\textwidth, trim={18.5cm 1cm 4.cm 1cm}]{final_images/model_contours_vertical_after.pdf}
 	}
-	\caption{Bastankhah and Port\'{e}-Agel wake model (a) without and (b) with the added linear interpolation for the near-wake. The heavy black line represents the turbine rotor. This figure was included for comparison with figure 6 of Bastankhah and Port\'{e}-Agel (2014) \cite{bastankhah2014}, and so model values were chosen accordingly (small wind turbine for use in a wind tunnel). We used a shear exponent of 0.15 for this figure.}
+	\caption{Bastankhah and Port\'{e}-Agel wake model (a) without and (b) with the added linear interpolation for the near-wake. The heavy black line represents the turbine rotor. This figure was included for comparison with Fig. 6 of Bastankhah and Port\'{e}-Agel (2014) \cite{bastankhah2014}, and so model values were chosen accordingly (small wind turbine for use in a wind tunnel). We used a shear exponent of 0.15 for this figure.}
 	
 	\label{fig:model_contours}
 \end{figure}
 
 \subsection{Wind Farm Model}\label{sec:npa}
-Niayifar and Port\'{e}-Agel (NP) proposed a wind farm model that used the BP model as published in 2014 \cite{bastankhah2014} for calculating the wind speed in the wakes \cite{niayifar2015, niayifar2016}. We applied the same wind farm model to the 2016 version of the Bastankhah and Port\'{e}-Agel model, with some variation as discussed in the following sections.
+NP proposed a wind farm model that used the BP model as published in 2014 \cite{bastankhah2014} for calculating the wind speed in the wakes \cite{niayifar2015, niayifar2016}. We applied the same wind farm model to the 2016 version of the BP model, with some variation as discussed in the following sections.
 % However, due to changes made to the Bastankhah and Port\'{e}-Agel wake model published in 2016 \cite{bastankhah2016}, along with the needs of gradient-based optimization, not all of the proposals made by Niayifar and Port\'{e}-Agel in their 2016 paper can be used. This section will discuss which aspects of the Niayifar and Port\'{e}-Agel model that were and were not used in our system.
 \subsubsection{Wake Combination}
-Niayifar and Port\'{e}-Agel found the most accurate method of wake combination to be a linear velocity deficit superposition that uses the inflow velocity of the upstream turbine as shown in \Cref{eq:wake-comb-lin}. 
+NP found the most accurate method of wake combination to be a linear velocity deficit superposition that uses the inflow velocity of the upstream turbine as shown in \Cref{eq:wake-comb-lin}. 
 %
 \begin{equation}\label{eq:wake-comb-lin}
 	u_j = \bar{u}_\infty - \sum_{i=1}^{N_T} [\bar{u}_i - u_{ij}] = \bar{u}_\infty - \sum_{i=1}^{N_T} \Delta u_{ij}
 \end{equation}
 %
-In \Cref{eq:wake-comb-lin}, $u_j$ is the flow velocity at the point of interest, $\bar{u_i}$ is the average inflow velocity of upstream turbine $i$, $u_{ij}$ is the wind speed that would exist at the point $j$ if only turbine $i$ were accounted for, and $\bar{u}_{\infty}$ is the average freestream velocity. For the upstream turbine velocity to be used, the inflow velocity of the turbines must be calculated in order from upstream to downstream. We used the heapsort algorithm to obtain a sorted index list of the turbines prior to solving the system for each wind direction. Using the sorted index list allowed turbine sorting without over complicating the gradients of the system. Our tests of the accuracy of various wake combination methods also found this method to be the most accurate in comparison to the LES results used by Niayifar and Port\'{e}-Agel in \cite{niayifar2016}.
+In \Cref{eq:wake-comb-lin}, $u_j$ is the flow velocity at the point of interest, $\bar{u_i}$ is the average inflow velocity of upstream turbine $i$, $u_{ij}$ is the wind speed that would exist at the point $j$ if only turbine $i$ were accounted for, and $\bar{u}_{\infty}$ is the average free-stream velocity. For the upstream turbine velocity to be used, the inflow velocity of the turbines must be calculated in order from upstream to downstream. We used the heapsort algorithm to obtain a sorted index list of the turbines prior to solving the system for each wind direction. Using the sorted index list allowed turbine sorting without overcomplicating the gradients of the system. Our tests of the accuracy of various wake combination methods also found this method to be the most accurate in comparison to the LES results used by Niayifar and Port\'{e}-Agel in \cite{niayifar2016}.
 
 \subsubsection{Turbulence Intensity}\label{sec:ti}
-Niayifar and Port\'{e}-Agel calculated local turbulence intensity using the model presented by Crespo and Hern\'{a}ndez in \cite{crespo1996}. The local turbulence intensity is then applied to the Bastankhah and Port\'{e}-Agel model through an empirical model for calculating the wake expansion coefficient as shown in \Cref{eq:ti_npa} \cite{niayifar2016}.
+Niayifar and Port\'{e}-Agel calculated local turbulence intensity using the model presented by Crespo and Hern\'{a}ndez in \cite{crespo1996}. The local turbulence intensity is then applied to the BP model through an empirical model for calculating the wake expansion coefficient as shown in \Cref{eq:ti_npa} \cite{niayifar2016}.
  %
  \begin{equation} \label{eq:ti_npa}
  	k^* = 0.3837 I + 0.003678
@@ -230,7 +230,7 @@ Niayifar and Port\'{e}-Agel calculated local turbulence intensity using the mode
 %
 In \Cref{eq:ti_npa}, $I$ is the turbulence intensity (TI). This model is only valid for TI values between 0.065 and 0.15. While the initial BP wake model does not include TI \cite{bastankhah2014}, TI was included by Bastankhah and Port\'{e}-Agel in their 2016 version of the model \cite{bastankhah2016}. We used the same TI values for the BP 2016 wake model and the NP wind farm model. 
 
-The algorithm for calculating local turbulence intensity using the hard maximum function is given in \Cref{alg:ti}. In our code implementation, we combined the nested loops used for the velocity and turbulence intensity calculations. 
+The algorithm for calculating local turbulence intensity using the hard maximum function is given in \Cref{alg:ti}. In our code implementation, we combined the nested loops used for the velocity and TI calculations. 
 %
 \begin{algorithm}[htpb!]
 	\caption{Turbulence Intensity Calculation (for more information, see \cite{niayifar2016})}
@@ -250,7 +250,7 @@ The algorithm for calculating local turbulence intensity using the hard maximum 
                \State $D_w \gets 4\sigma$
                \State $A_{w_{ij}} \gets$ Wake overlap area of wake $i$ and rotor $j$ \Comment{Assume circular wake}
                \If{$C_{T_i} > 0.96$}
-                    \State $a_i \gets 0.143 + \sqrt{0.0203-0.6427[0.889 - C_{T_i}]}$ \Comment{Glauert correction\cite{gebraad2017-max-aep}}
+                    \State $a_i \gets 0.143 + \sqrt{0.0203-0.6427[0.889 - C_{T_i}]}$ \Comment{Glauert correction \cite{gebraad2017-max-aep}}
                \Else
                    \State $a_i \gets  \frac{1}{2}\Big[1-\sqrt{1-C_{T_i}}\Big]$
                \EndIf
@@ -266,7 +266,7 @@ The algorithm for calculating local turbulence intensity using the hard maximum 
 \end{algorithm}
 %
 
-We used three different approaches to calculating TI at various points in the optimization process: (1) ambient TI only, (2) local TI with a smooth maximum function, and (3) local TI with a hard maximum function as done by Niayifar and Port\'{e}-Agel \cite{niayifar2016} and shown in \Cref{alg:ti}. The reasons for using the three methods for calculating TI are discussed in \Cref{sec:opt}. The smooth maximum function we used is shown in \Cref{eq:smoothmax1,eq:smoothmax2,eq:smoothmax3} and is derived from the LogSumExp (LSE) function \cite{cook2010-softmaximum}.
+We used three different approaches to calculating TI at various points in the optimization process: (1) ambient TI only, (2) local TI with a smooth maximum function, and (3) local TI with a hard maximum function as done by Niayifar and Port\'{e}-Agel \cite{niayifar2016} and shown in \Cref{alg:ti}. The reasons for using the three methods for calculating TI are discussed in \Cref{sec:opt}. The smooth maximum function we used is shown in \Cref{eq:smoothmax1,eq:smoothmax2,eq:smoothmax3} and is derived from the LogSumExp function \cite{cook2010-softmaximum}.
 %
 \begin{equation}\label{eq:smoothmax1}
     t_{max} = \min(t_1, t_2)
@@ -275,16 +275,16 @@ We used three different approaches to calculating TI at various points in the op
     t_{min} = \max(t_1, t_2)
 \end{equation}
 \begin{equation}\label{eq:smoothmax3}
-   \text{smoothmax}(t_{max},t_{min},s) = \frac{\ln(1+\exp(s[t_{min}-t_{max}]))+s t_{max}}{s}
+  \text{max}_{smooth}(t_{max},t_{min},s) = \frac{\ln(1+\exp(s[t_{min}-t_{max}]))+s t_{max}}{s}
 \end{equation}
 %
-In \Cref{eq:smoothmax1,eq:smoothmax2,eq:smoothmax3}, $s$ controls the smoothness of the transition between terms and influences the error of the calculation, $t_{max}$ and $t_{min}$ represent the respective maximum and minimum of the two values being compared. In calculating local turbulence intensity, \Cref{eq:smoothmax3} is applied, as in  \Cref{eq:maxti}, to compare the product of the added local turbulence intensity and the wake overlap ratio.
+In \Cref{eq:smoothmax1,eq:smoothmax2,eq:smoothmax3}, $s$ controls the smoothness of the transition between terms and influences the error of the calculation and $t_{max}$ and $t_{min}$ represent the respective maximum and minimum of the two values being compared. In calculating local turbulence intensity, \Cref{eq:smoothmax3} is applied, as in  \Cref{eq:maxti}, to compare the product of the added local turbulence intensity and the wake overlap ratio.
 %
 \begin{equation}\label{eq:maxti}
-    I_{+_j} = \text{smoothmax}{\bigg(\frac{I_{+_{ij}}A_{w_{ij}}}{A_{r_j}}\bigg)}
+    I_{+_j} = \text{max}_{smooth}{\bigg(\frac{I_{+_{ij}}A_{w_{ij}}}{A_{r_j}}\bigg)}
 \end{equation}
 %
-In \Cref{eq:maxti}, $A_{w_{ij}}$ is the area of the wake of turbine $i$ at the downstream location of turbine $j$, $A_{r_j}$ is the area of the rotor of turbine $j$, and $I_{+_{ij}}$ is the added turbulence intensity from turbine $i$ at the downstream location of turbine $j$. In our implementation only two values are compared at a time, the current value and the previous result of the smooth max function. The total turbulence intensity is then calculated using \Cref{eq:ti_at_turb}.
+In \Cref{eq:maxti}, $A_{w_{ij}}$ is the area of the wake of turbine $i$ at the downstream location of turbine $j$, $A_{r_j}$ is the area of the rotor of turbine $j$, and $I_{+_{ij}}$ is the added turbulence intensity from turbine $i$ at the downstream location of turbine $j$. In our implementation, only two values are compared at a time; the current value and the previous result of the smooth max function. The total turbulence intensity is then calculated using \Cref{eq:ti_at_turb}.
 %
 \begin{equation}\label{eq:ti_at_turb}
     I_j = \sqrt{I_0^2+I_{+_j}^2}
@@ -293,7 +293,7 @@ In \Cref{eq:maxti}, $A_{w_{ij}}$ is the area of the wake of turbine $i$ at the d
 The maximum error of \Cref{eq:smoothmax3} occurs when $t_{min} = t_{max}$, and can be calculated as in \Cref{eq:error_max}.
 %
 \begin{equation}\label{eq:error_max}
-	Error_{max} = \frac{\ln{(2)}}{s}
+	\text{Error}_{max} = \frac{\ln{(2)}}{s}
 \end{equation}
 %
 To keep the error from the smooth max below 0.001, or about 1\% of the total turbulence intensity, we set $s=700$.
