@@ -140,7 +140,7 @@ In \Cref{eq:sigmay,eq:sigmaz}, $k_y$ and $k_z$ are the horizontal and vertical w
 \begin{equation}\label{eq:potentialcore}
 	\frac{x_0}{d} = \frac{\cos{\gamma }\Big[1+\sqrt{1-C_T}\Big]}{\sqrt{2} \Big[\alpha ^* I + \beta ^* \Big[1- \sqrt{1-C_T}\Big]\Big]}
 \end{equation}
-where $I$ is the turbulence intensity, $\alpha^*=2.32$, and $\beta^*=0.154$. 
+In \Cref{eq:potentialcore}, $I$ is the turbulence intensity, $\alpha^*=2.32$, and $\beta^*=0.154$. 
 
 Wind shear was added to the wake model using a power law defined as shown in \Cref{eq:shear}.
 %
@@ -148,7 +148,7 @@ Wind shear was added to the wake model using a power law defined as shown in \Cr
 	u = u_r\bigg[\frac{z-z_o}{z_r-z_o}\bigg]^\psi
 \end{equation}
 %
-where $u_r$ is the reference wind speed, $z$ is the height of interest, $z_r$ is the height at which $u_r$ was measured, $z_o$ is the height of local ground, and $\psi$ is the shear exponent. The value of $\psi$ for comparison to the LES was determined by fitting \Cref{eq:shear} to a series of wind speeds in the LES precursor. To fit the curve, $z_r$ was set to 80 m to focus on matching the LES values in the rotor area. The appropriate value of $\psi$ for comparison to the LES was determined to be 0.31.
+In \Cref{eq:shear}, $u_r$ is the reference wind speed, $z$ is the height of interest, $z_r$ is the height at which $u_r$ was measured, $z_o$ is the height of local ground, and $\psi$ is the shear exponent. The value of $\psi$ for comparison to the LES was determined by fitting \Cref{eq:shear} to a series of wind speeds in the LES precursor. To fit the curve, $z_r$ was set to 80 m to focus on matching the LES values in the rotor area. The appropriate value of $\psi$ for comparison to the LES was determined to be 0.31.
 %0665565.
 The shear exponent fitting plot is shown in \Cref{fig:shear_fit}.
 %
@@ -175,26 +175,26 @@ By substituting \Cref{eq:sigmay,eq:sigmaz} into \Cref{eq:gt1}, and separating th
 To find the exact downstream location where the model begins to be defined, $x_d$, we apply the quadratic formula to \Cref{eq:xd1}, select the relevant root, and then solve for $x$ to obtain \Cref{eq:xd}.
 %
 \begin{equation}\label{eq:xd}
-	x_d = x_0 + \frac{d\Big[k_y+k_z\cos{\gamma} - \sqrt{[k_y+k_z\cos{\gamma}]^2-4k_y k_z[C_T-1]\cos{\gamma}}\Big]}{2k_y k_z\sqrt{8}}
+	x_d = x_0 + \frac{d\Bigg[k_y+k_z\cos{\gamma} - \sqrt{[k_y+k_z\cos{\gamma}]^2-4k_y k_z[C_T-1]\cos{\gamma}}\Bigg]}{2k_y k_z\sqrt{8}}
 \end{equation}
 %
 The model, then, is undefined for regions where $x<x_d$. 
 
-To remove the discontinuity, we used linear interpolation on both the velocity value and the wake spread. First, the magnitude of the Gaussian curve at $x_d$ was calculated, as in \Cref{eq:gaus-mag}.
+To remove the discontinuity, we used linear interpolation on both the velocity value and the wake spread. First, the magnitude of the Gaussian curve at $x_d$ was calculated, as in \Cref{eq:gauss-mag}.
 %
-\begin{equation}\label{eq:gaus-mag}
+\begin{equation}\label{eq:gauss-mag}
 	\Delta U_{d_m} = 1 - \sqrt{1 - \frac{C_T \cos{\gamma}}{8 \sigma_{y_d}  \sigma_{z_d}/d^2}}
 \end{equation}
 %
-where $\sigma_{y_d}$ and $\sigma_{z_d}$ represent the wake spread at $x_d$. Then, using the magnitude of the Gaussian curve, and keeping the wake spread constant for the velocity calculation, the normalized velocity difference is calculated as a function of the downstream position of the point of interest ($x$)
-\begin{equation}
+In \Cref{eq:gauss-mag}, $\sigma_{y_d}$ and $\sigma_{z_d}$ represent the wake spread at $x_d$. Then, using the magnitude of the Gaussian curve, and keeping the wake spread constant for the velocity calculation, the normalized velocity difference is calculated as a function of the downstream position of the point of interest ($x$), as shown in \Cref{eq:bplinear}.
+\begin{equation}\label{eq:bplinear}
 	\frac{\Delta u_{ij}}{\bar{u}_{i}} = \bigg[x\bigg[\frac{\Delta U_{d_m} - \Delta U_r}{x_d}\bigg] + \Delta U_r\bigg]
         \exp{\bigg(-0.5\bigg[\frac{y-\delta}{ \sigma_{y_d}}\bigg]^2\bigg)}\exp{\bigg(-0.5\bigg[\frac{z-z_h}{ \sigma_{z_d}}\bigg]^2~\bigg)}
 \end{equation}
 %
-where $\Delta U_r$ is a predetermined normalized velocity deficit at the rotor hub. To avoid over-predicting the velocity deficits, and potentially causing an unrealistic flow reversal,  we used a value of $\Delta U_r=\Delta U_{d_m}$. 
+In \Cref{eq:bplinear}, $\Delta U_r$ is a predetermined normalized velocity deficit at the rotor hub. To avoid overpredicting the velocity deficits and potentially causing an unrealistic flow reversal,  we used a value of $\Delta U_r=\Delta U_{d_m}$. 
 
-The results of the model changes discussed above can be seen in \Cref{fig:model_contours}. These changes make the model continuous throughout the domain and differentiable everywhere except at the exact turbine location. With a separation constraint in place, the probability of turbines landing exactly on top of each other is extremely small, as noted in \cite{thomas2017}. With the linear interpolation method, optimizations succeed even when turbines are placed less than one diameter from each other. While the linear interpolation makes little attempt to be physically accurate in the near-wake, the accuracy of the model for AEP calculation purposes should be unaffected since turbines will almost never be placed close enough together to be in the linear interpolation region in a final design. If greater accuracy is desired in the near-wake, it would be feasible to use the linear interpolation during optimization and then switch to a more accurate near-wake model for final calculations, such as the one proposed in \cite{keane2016}.
+The results of the model changes discussed above are shown in \Cref{fig:model_contours}. These changes make the model continuous throughout the domain and differentiable everywhere except at the exact turbine location. With a separation constraint in place, the probability of turbines landing exactly on top of each other is extremely small, as noted in \cite{thomas2017}. With the linear interpolation method, optimizations succeed even when turbines are placed less than one diameter from each other. While the linear interpolation makes little attempt to be physically accurate in the near-wake, the accuracy of the model for AEP calculation purposes should be unaffected since turbines will almost never be placed close enough together to be in the linear interpolation region in a final design. If greater accuracy is desired in the near-wake, it would be feasible to use the linear interpolation during optimization and then switch to a more accurate near-wake model for final calculations, such as the one proposed in \cite{keane2016}.
 
 \begin{figure}[htbp!]
 	\centering
@@ -219,16 +219,16 @@ Niayifar and Port\'{e}-Agel found the most accurate method of wake combination t
 	u_j = \bar{u}_\infty - \sum_{i=1}^{N_T} [\bar{u}_i - u_{ij}] = \bar{u}_\infty - \sum_{i=1}^{N_T} \Delta u_{ij}
 \end{equation}
 %
-where $u_j$ is the flow velocity at the point of interest, $\bar{u_i}$ is the average inflow velocity of upstream turbine $i$, $u_{ij}$ is the wind speed that would exist at the point $j$ if only turbine $i$ were accounted for, and $\bar{u}_{\infty}$ is the average freestream velocity. For the upstream turbine velocity to be used, the inflow velocity of the turbines must be calculated in order from upstream to downstream. We used the heapsort algorithm to obtain a sorted index list of the turbines prior to solving the system for each wind direction. Using the sorted index list allowed turbine sorting without over complicating the gradients of the system. Our tests of the accuracy of various wake combination methods also found this method to be the most accurate in comparison to the LES results used by Niayifar and Port\'{e}-Agel in \cite{niayifar2016}.
+In \Cref{eq:wake-comb-lin}, $u_j$ is the flow velocity at the point of interest, $\bar{u_i}$ is the average inflow velocity of upstream turbine $i$, $u_{ij}$ is the wind speed that would exist at the point $j$ if only turbine $i$ were accounted for, and $\bar{u}_{\infty}$ is the average freestream velocity. For the upstream turbine velocity to be used, the inflow velocity of the turbines must be calculated in order from upstream to downstream. We used the heapsort algorithm to obtain a sorted index list of the turbines prior to solving the system for each wind direction. Using the sorted index list allowed turbine sorting without over complicating the gradients of the system. Our tests of the accuracy of various wake combination methods also found this method to be the most accurate in comparison to the LES results used by Niayifar and Port\'{e}-Agel in \cite{niayifar2016}.
 
 \subsubsection{Turbulence Intensity}\label{sec:ti}
-Niayifar and Port\'{e}-Agel calculated local turbulence intensity using the model presented by Crespo and Hern\'{a}ndez in \cite{crespo1996}. The local turbulence intensity is then applied to the Bastankhah and Port\'{e}-Agel model through an empirical model for calculating the wake expansion coefficient as shown in \Cref{eq:ti_npa} \cite{niayifar2016},
+Niayifar and Port\'{e}-Agel calculated local turbulence intensity using the model presented by Crespo and Hern\'{a}ndez in \cite{crespo1996}. The local turbulence intensity is then applied to the Bastankhah and Port\'{e}-Agel model through an empirical model for calculating the wake expansion coefficient as shown in \Cref{eq:ti_npa} \cite{niayifar2016}.
  %
  \begin{equation} \label{eq:ti_npa}
  	k^* = 0.3837 I + 0.003678
  \end{equation}
 %
-where $I$ is the turbulence intensity (TI). This model is only valid for TI values between 0.065 and 0.15. While the initial BP wake model does not include TI \cite{bastankhah2014}, TI was included by Bastankhah and Port\'{e}-Agel in their 2016 version of the model \cite{bastankhah2016}. We used the same TI values for the BP 2016 wake model and the NP wind farm model. 
+In \Cref{eq:ti_npa}, $I$ is the turbulence intensity (TI). This model is only valid for TI values between 0.065 and 0.15. While the initial BP wake model does not include TI \cite{bastankhah2014}, TI was included by Bastankhah and Port\'{e}-Agel in their 2016 version of the model \cite{bastankhah2016}. We used the same TI values for the BP 2016 wake model and the NP wind farm model. 
 
 The algorithm for calculating local turbulence intensity using the hard maximum function is given in \Cref{alg:ti}. In our code implementation, we combined the nested loops used for the velocity and turbulence intensity calculations. 
 %
@@ -278,19 +278,19 @@ We used three different approaches to calculating TI at various points in the op
    \text{smoothmax}(t_{max},t_{min},s) = \frac{\ln(1+\exp(s[t_{min}-t_{max}]))+s t_{max}}{s}
 \end{equation}
 %
-where $s$ controls the smoothness of the transition between terms and influences the error of the calculation, $t_{max}$ and $t_{min}$ represent the respective maximum and minimum of the two values being compared. In calculating local turbulence intensity, \Cref{eq:smoothmax3} is applied as in  \Cref{eq:maxti} to compare the product of the added local turbulence intensity and the wake overlap ratio.
+In \Cref{eq:smoothmax1,eq:smoothmax2,eq:smoothmax3}, $s$ controls the smoothness of the transition between terms and influences the error of the calculation, $t_{max}$ and $t_{min}$ represent the respective maximum and minimum of the two values being compared. In calculating local turbulence intensity, \Cref{eq:smoothmax3} is applied, as in  \Cref{eq:maxti}, to compare the product of the added local turbulence intensity and the wake overlap ratio.
 %
 \begin{equation}\label{eq:maxti}
     I_{+_j} = \text{smoothmax}{\bigg(\frac{I_{+_{ij}}A_{w_{ij}}}{A_{r_j}}\bigg)}
 \end{equation}
 %
-where $A_{w_{ij}}$ is the area of the wake of turbine $i$ at the downstream location of turbine $j$, $A_{r_j}$ is the area of the rotor of turbine $j$, and $I_{+_{ij}}$ is the added turbulence intensity from turbine $i$ at the downstream location of turbine $j$. In our implementation only two values are compared at a time, the current value and the previous result of the smooth max function. The total turbulence intensity is then calculated using \Cref{eq:ti_at_turb}
+In \Cref{eq:maxti}, $A_{w_{ij}}$ is the area of the wake of turbine $i$ at the downstream location of turbine $j$, $A_{r_j}$ is the area of the rotor of turbine $j$, and $I_{+_{ij}}$ is the added turbulence intensity from turbine $i$ at the downstream location of turbine $j$. In our implementation only two values are compared at a time, the current value and the previous result of the smooth max function. The total turbulence intensity is then calculated using \Cref{eq:ti_at_turb}.
 %
 \begin{equation}\label{eq:ti_at_turb}
     I_j = \sqrt{I_0^2+I_{+_j}^2}
 \end{equation}
 %
-The maximum error of \Cref{eq:smoothmax3} occurs when $t_{min} = t_{max}$, and can be calculated as in \Cref{eq:error_max}
+The maximum error of \Cref{eq:smoothmax3} occurs when $t_{min} = t_{max}$, and can be calculated as in \Cref{eq:error_max}.
 %
 \begin{equation}\label{eq:error_max}
 	Error_{max} = \frac{\ln{(2)}}{s}
@@ -363,13 +363,13 @@ When comparing our code to LES and other data, we used 100 sampling points acros
 \end{figure}
 
 \subsubsection{AEP and Wind Turbine Power}
-AEP was calculated as in \Cref{eq:aep}
+AEP was calculated as in \Cref{eq:aep}.
 \begin{equation}
     \label{eq:aep}
     AEP = \bigg[\frac{hours}{day}\bigg]\bigg[\frac{days}{year} \bigg]\sum_{k=1}^{N_D} \bigg[ f_k \sum_{j=1}^{N_T}P_{j_k} \bigg]
 \end{equation}
 %
-where $N_D$ is the number of wind directions, $N_T$ is the number of wind wind turbines, $f_k$ is the probability of wind in direction $k$. The power of turbine $j$ in direction $k$, $P_{j_k}$, is calculated based on the definition of the power coefficient as done in \cite{gebraad2014} and shown in \Cref{eq:power}.
+In \Cref{eq:aep}, $N_D$ is the number of wind directions, $N_T$ is the number of wind wind turbines, $f_k$ is the probability of wind in direction $k$. The power of turbine $j$ in direction $k$, $P_{j_k}$, is calculated based on the definition of the power coefficient as done in \cite{gebraad2014} and shown in \Cref{eq:power}.
 %
 \begin{equation}\label{eq:power}
     P_{j_k} = 
@@ -380,7 +380,7 @@ where $N_D$ is the number of wind directions, $N_T$ is the number of wind wind t
 \end{cases}
 \end{equation}
 %
-where $\rho$ is the air density, $A_j$ represents the rotor-swept area of turbine $j$, and $C_{P_j}$ is the power coefficient of turbine $j$ for the given effective wind speed at the rotor ($\bar{u}_j$).
+In \Cref{eq:power}, $\rho$ is the air density, $A_j$ represents the rotor-swept area of turbine $j$, and $C_{P_j}$ is the power coefficient of turbine $j$ for the given effective wind speed at the rotor ($\bar{u}_j$).
 
 \subsubsection{Model Verification}
 To verify our implementation of the models described, we compared the output of our code with data for the Horns Rev wind farm from Niayifar and Port\'{e}-Agel \cite{niayifar2016} as shown in \Cref{fig:power_line,fig:power_direction}. We calculated error, in normalized power, based on the LES data values from \cite{niayifar2016} and reported the error in \Cref{tab:validation-error}. For the Horns Rev row averaging comparison using 100 samples on the rotor-swept area as shown in \Cref{fig:power_line}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $0.034$ and a maximum error of $0.057$; ignoring local turbulence intensity resulted in an average error of $0.179$ and a maximum error of $0.253$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $0.018$ and a maximum error of $0.035$.  For the Horns Rev directional power comparison using 100 samples on the rotor-swept area as shown in \Cref{fig:power_direction}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $0.022$ and a maximum error of $0.055$; ignoring local turbulence intensity resulted in an average error of $0.058$ and a maximum error of $0.206$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $0.017$ and a maximum error of $0.053$. The high directional errors when local turbulence intensity is ignored are in the directions of highest wake interactions as can be seen in \Cref{fig:power_direction} and do not alter the general trend of the directional power. The Horns Rev comparisons using 1 sample on the rotor-swept area are shown in \Cref{fig:power_line}(b) and \Cref{fig:power_direction}(b). Using only 1 sample on the rotor-swept area resulted in slightly larger errors as reported in \Cref{tab:validation-error}. Based on our model error being within the range reported in \cite{niayifar2016} when we used 100 samples and local TI (less than $0.057$ and $0.055$ for the row and directional comparisons respectively), we determined that our implementation of the BP wake and NP farm models was sufficient and could be used to perform wind farm layout optimization case studies.
@@ -519,7 +519,7 @@ We optimized the wind farm layout using annual energy production (AEP) as the ob
 	\end{aligned}
 \end{equation}
 %
-Where $(x_i,y_i)$ is the position of each turbine $i$, $S_{ij}$ represents the separation distance between each pair of turbines $i$ and $j$, $(x_c,y_c)$ is the location of the center of the wind farm, and $r_b$ is the radius of the wind farm boundary.
+In \Cref{eq:objective}, $(x_i,y_i)$ is the position of each turbine $i$, $S_{ij}$ represents the separation distance between each pair of turbines $i$ and $j$, $(x_c,y_c)$ is the location of the center of the wind farm, and $r_b$ is the radius of the wind farm boundary.
 
 The optimization problem was built in OpenMDAO, a Multidisciplinary Design Analysis and Optimization platform  \cite{gray2010_OpenMDAO}. Gradients of the wake model were obtained using Tapenade, an algorithmic differentiation tool \cite{tapenade2013}. Gradients of all other system components were derived by hand. The final system gradients were compiled by OpenMDAO.
 
