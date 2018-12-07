@@ -330,7 +330,7 @@ To keep the error from the smooth maximum below 0.001, or about 1\% of the total
 
 \subsubsection{Sampling Over the Rotor-Swept Area}
 Various methods can be used to approximate the effective velocity at the rotor. The ideal method is a full integration across the rotor-swept area. We approximated the integral by sampling the velocity at various points and taking the average. 
-%Maximum and average directional error, as compared to the directional power LES results from \cite{niayifar2016}, is shown in \cref{fig:sampling-error}. 
+%Maximum and average directional error, as compared to the directional power LES results from \cite{niayifar2016}, is shown in \Cref{fig:sampling-error}. 
 %\begin{figure}[ht]
 %	\centering
 %	\subfigure[]{
@@ -434,7 +434,7 @@ To verify our implementation of the models described, we compared the output of 
 %smooth max ave error 0.0167580458573
 %smooth max max error 0.052567187849
 
-% direcrtional 1 sample
+% direcrtional 
 %error for direction horns rev - not percent
 %NPA ave error 0.0224456601583
 %NPA max error 0.0548174348544
@@ -502,7 +502,7 @@ To reduce the computational cost of the LES simulations, we generated a wind ros
 	\subfigure[]{
 		\includegraphics[width=0.48\textwidth, trim={3.25cm 0cm 3.25cm 0cm}]{final_images/windrose_les.pdf}
 	}
-	\caption{(a) Nantucket frequency wind rose \cite{wrcc2017}. (b) Nantucket frequency wind rose binned into 12 directions}
+	\caption{(a) Nantucket frequency wind rose \cite{wrcc2017}. (b) Nantucket frequency wind rose binned into 12 directions.}
 	\label{fig:windrose}
 \end{figure}
 
@@ -539,11 +539,11 @@ SOWFA solves the three-dimensional, incompressible, Navier-Stokes equations and 
 
 SOWFA calculates the unsteady flow field to compute the time-varying power, velocity deficits, and aerodynamic loads at each turbine in a wind plant.  This level of computation, with high-fidelity accuracy, takes on the order of hours to days to run on a supercomputer using a few hundred to a few thousand processors, depending on the size of the wind plant. The simulations run for this study were performed on Peregrine, NREL's high-performance computer \cite{regimbal2015peregrine}.
 
-It should be noted that studies have been performed to validate SOWFA.  For example, it has been compared with 48-turbine Lillgrund wind plant field data and shows good agreement through the first five turbines in a row aligned with the wind direction \cite{churchfield2012large}.  In addition, SOWFA has been tested to verify that it captures the inertial range in the turbulent energy spectra and log-layer in the mean flow, both of which characterize a real atmospheric boundary layer \cite{churchfield2012numerical}.  Further validation studies are ongoing.  
+It should be noted that studies have been performed to validate SOWFA.  For example, it has been compared with 48-turbine Lillgrund wind plant field data and shows good agreement through the first five turbines in a row aligned with the wind direction \cite{churchfield2012large}.  In addition, SOWFA has been tested to verify that it captures the inertial range in the turbulent energy spectra and log layer in the mean flow, both of which characterize a real atmospheric boundary layer \cite{churchfield2012numerical}.  Further validation studies are ongoing.  
 
-Actuator disk simulations of the 38-turbine layout described in \Cref{sec:testcase}, as well as the  optimized layout, were performed using SOWFA.  To avoid needing a different precursor for each of  12 directions, the layout was rotated to a reference wind direction of 270$^\circ$.  The scenarios were simulated under neutral atmospheric conditions with an 8\,m/s mean wind speed at 80 m and approximately 10.8$\%$ turbulence intensity at hub height.
+Actuator disk simulations of the 38-turbine layout described in \Cref{sec:testcase}, as well as the  optimized layout, were performed using SOWFA. To avoid needing a different precursor for each of the 12 directions, the layout was rotated to a reference wind direction of 270$^\circ$.  The scenarios were simulated under neutral atmospheric conditions with an 8\,m/s mean wind speed at 80 m and approximately 10.8$\%$ turbulence intensity at hub height.
 
-The simulations each ran for approximately 2000\,s of simulated time.  A structured mesh was used in this study with a grid spacing of 10\,m in the $x$, $y$, and $z$ directions resulting in a grid that is 500 $\times$ 500 $\times$ 100, i.e. 25,000,000 grid cells.  Using 500 cores, simulations took on the order of 1 day to complete.  
+The simulations each ran for approximately 2000\,s of simulated time.  A structured mesh was used in this study with a grid spacing of 10\,m in the $x$, $y$, and $z$ directions, resulting in a grid that is 500 $\times$ 500 $\times$ 100 (i.e., 25,000,000 grid cells).  Using 500 cores, simulations took on the order of 1 day to complete.  
 
 % \subsection{Comparing LES and Model Results}
 % Comparison Approach
@@ -554,12 +554,12 @@ The simulations each ran for approximately 2000\,s of simulated time.  A structu
 
 \section{Results and Discussion}
 
-Due to the multimodal nature of the wind farm layout optimization problem, optimizing with the 200 different starting layouts resulted in a range of AEP values. While the optimizations were performed using 1 sample on the rotor-swept area, we used 100 samples across the rotor-swept area for the analysis. The distributions of AEP values as calculated with 1 and 100 samples across the rotor-swept area are shown in \cref{fig:opt-distribution}. Note that the distribution of AEP results is shifted lower when calculated using 100 samples on the rotor-swept area due to the denser sampling accounting for more wake effects. The next step was to determine the best layout. Calculating with 100 samples or 1 sample both indicate that the best layout is the one that started from the base case layout (shown in \cref{fig:starting-layout}). The final optimized layout is shown in \cref{fig:optimized-layout}.
+Due to the multimodal nature of the wind farm layout optimization problem, optimizing with the 200 different starting layouts resulted in a range of AEP values. While the optimizations were performed using one sample on the rotor-swept area, we used 100 samples across the rotor-swept area for the analysis. The distributions of AEP values as calculated with one and 100 samples across the rotor-swept area are shown in \Cref{fig:opt-distribution}. Note that the distribution of AEP results is shifted lower when calculated using 100 samples on the rotor-swept area due to the denser sampling accounting for more wake effects. The next step was to determine the best layout. Calculating with 100 samples or one sample both indicate that the best layout is the one that started from the base case layout (shown in \Cref{fig:starting-layout}). The final optimized layout is shown in \Cref{fig:optimized-layout}.
 %
 \begin{figure}[htpb!]
 	\centering
 	\includegraphics[width=0.75\textwidth]{final_images/38turbs_results_hist_aep.pdf}
-	\caption{Distribution of AEP improvement calculated with 1 rotor sample point (black) and 100 rotor sample points (blue) from the 200 optimization runs. The high outlier started from the baseline layout. Note that the optimizations were performed using only 1 rotor sample point.}
+	\caption{Distribution of AEP improvement calculated with one rotor sample point (black) and 100 rotor sample points (blue) from the 200 optimization runs. The high outlier started from the baseline layout. Note that the optimizations were performed using only one rotor sample point.}
 	\label{fig:opt-distribution}
 \end{figure}
 %
@@ -570,7 +570,7 @@ Due to the multimodal nature of the wind farm layout optimization problem, optim
 	\label{fig:optimized-layout}
 \end{figure}
 
-We will now investigate the error with more granularity. The directional power production for both SOWFA and the BP model are shown in \cref{fig:dir-power}. The optimized power production in each direction for the optimized layout was nearly equal according to BP, with a spread of only \SI[per-mode=symbol]{0.3}{\mega\watt} across all directions. More variance appeared in the SOWFA results, which had a spread of \SI[per-mode=symbol]{3.4}{\mega\watt} across all directions for the optimized layout. The SOWFA predictions for the base case directions had more variation than BP as well. When we dive a little deeper we find the directional power predictions had errors ranging from $-5.4\%$ to $5.0\%$ for the base case layout and $-4.5\%$ to $0.8\%$ for the optimized layout, so some of the AEP improvement discrepancy is coming from the BP model underestimating the directional powers more for the optimized layout than the base case layout. The directional power errors for the base case layout have generally larger magnitudes than the directional errors for the optimized layout, but the directional errors for the base case layout are more equally distributed in the positive and negative than the directional errors for the optimized layout. Despite the directional errors, both the BP model and SOWFA predicted increased power production for every direction for the optimized layout as compared to the base case layout. The directional power, AEP, AEP improvement, and corresponding errors are reported in \cref{tab:validation-error}.
+We will now investigate the error with more granularity. The directional power production for both SOWFA and the BP model are shown in \Cref{fig:dir-power}. The optimized power production in each direction for the optimized layout was nearly equal according to BP, with a spread of only \SI[per-mode=symbol]{0.3}{\mega\watt} across all directions. More variance appeared in the SOWFA results, which had a spread of \SI[per-mode=symbol]{3.4}{\mega\watt} across all directions for the optimized layout. The SOWFA predictions for the base case directions had more variation than BP as well. When we dive a little deeper we find that the directional power predictions had errors ranging from $-5.4\%$ to $5.0\%$ for the base case layout and $-4.5\%$ to $0.8\%$ for the optimized layout, so some of the AEP improvement discrepancy is coming from the BP model underestimating the directional powers more for the optimized layout than the base case layout. The directional power errors for the base case layout have generally larger magnitudes than the directional errors for the optimized layout, but the directional errors for the base case layout are more equally distributed in the positive and negative than the directional errors for the optimized layout. Despite the directional errors, both the BP model and SOWFA predicted increased power production for every direction for the optimized layout as compared to the base case layout. The directional power, AEP, AEP improvement, and corresponding errors are reported in \Cref{tab:validation-error}.
 %
 \begin{figure}[ht]
 	\centering
@@ -753,7 +753,7 @@ We will now investigate the error with more granularity. The directional power p
 \end{table*}
 %
 
-Just as the directional errors are larger than the AEP errors, the wind turbine power errors are, in general, much greater than the directional errors. Power production errors for individual turbines ranged from $-27.6\%$ to $96.6\%$ for the base case layout and $-32.9\%$ to $118.4\%$ for the optimized layout. The BP model accurately predicted the direction of the change in power for only $61.6\%$ of the wind turbines. Power predictions for individual wind turbines have too much error to be trusted individually. It may be argued that if we can't trust the individual wind turbine power predictions, then the wind farm layout optimization can't be trusted either since the optimizer moves the turbines to improve their power and therefor the power of the farm as a whole. However, despite the turbine errors, the BP model still allows the optimizer to reduce wake effects, which is the primary driver for increasing power production in a real wind farm. The errors for power production for each turbine in each wind direction are shown in the appendix in \cref{fig:optimized-power-error,fig:basecase-power-error}.
+Just as the directional errors are larger than the AEP errors, the wind turbine power errors are, in general, much greater than the directional errors. Power production errors for individual turbines ranged from $-27.6\%$ to $96.6\%$ for the base case layout and $-32.9\%$ to $118.4\%$ for the optimized layout. The BP model accurately predicted the direction of the change in power for only $61.6\%$ of the wind turbines. Power predictions for individual wind turbines have too much error to be trusted individually. It may be argued that if we can't trust the individual wind turbine power predictions, then the wind farm layout optimization can't be trusted either since the optimizer moves the turbines to improve their power and therefor the power of the farm as a whole. However, despite the turbine errors, the BP model still allows the optimizer to reduce wake effects, which is the primary driver for increasing power production in a real wind farm. The errors for power production for each turbine in each wind direction are shown in the appendix in \Cref{fig:optimized-power-error,fig:basecase-power-error}.
 
 We have found that each time we average turbine powers to get directional power, or average directional power to calculate AEP, the error decreases. The maximum errors at each level are as follows: $118.4\%$ for wind turbine power, $5.4\%$ for directional power, and $1.8\%$ for AEP. This is as expected since we know from the law of large numbers that the more samples that are combined to get an averaged result, the more precise that result tends to be. Our directional power and AEP values are essentially scaled means of sets of the values from the population of wind turbines. For example, the average turbine power error for the base case and optimized layouts respectively are $5.6\%$ and $1.0\%$, with standard deviations of $21.6\%$ and $16.6\%$. We can then place some confidence in AEP and directional power predictions from the BP model. We have shown that the overall improvements in directional power for this case are not just a factor of the simplified wake model since the AEP improvement is shown to be even greater according to SOWFA simulations than predicted by the BP model.
 
@@ -795,7 +795,7 @@ A portion of the research was performed using computational resources sponsored 
 A portion of the research was performed using computational resources of the Fulton Supercomputing Lab located at Brigham Young University.
 
 \section*{Appendix}
-The power production error for individual turbines in each direction for the 2016 Bastankhah and Port\'{e}-Agel wake model and the 2016 Niayifar and Port\'{e}-Agel wind farm model as compared to LES simulation performed using SOWFA are shown in \cref{fig:basecase-power-error}(a) and \cref{fig:optimized-power-error}(a). Directional power production errors for the models compared to the SOWFA results are shown in \cref{fig:basecase-power-error}(b) and \cref{fig:optimized-power-error}(b).
+The power production error for individual turbines in each direction for the 2016 Bastankhah and Port\'{e}-Agel wake model and the 2016 Niayifar and Port\'{e}-Agel wind farm model as compared to LES simulation performed using SOWFA are shown in \Cref{fig:basecase-power-error}(a) and \Cref{fig:optimized-power-error}(a). Directional power production errors for the models compared to the SOWFA results are shown in \Cref{fig:basecase-power-error}(b) and \Cref{fig:optimized-power-error}(b).
 %
 \begin{figure}[htpb!]
 	\centering
