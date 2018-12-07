@@ -284,7 +284,7 @@ In \Cref{eq:smoothmax1,eq:smoothmax2,eq:smoothmax3}, $s$ controls the smoothness
     I_{+_j} = \text{max}_{smooth}{\bigg(\frac{I_{+_{ij}}A_{w_{ij}}}{A_{r_j}}\bigg)}
 \end{equation}
 %
-In \Cref{eq:maxti}, $A_{w_{ij}}$ is the area of the wake of turbine $i$ at the downstream location of turbine $j$, $A_{r_j}$ is the area of the rotor of turbine $j$, and $I_{+_{ij}}$ is the added turbulence intensity from turbine $i$ at the downstream location of turbine $j$. In our implementation, only two values are compared at a time; the current value and the previous result of the smooth max function. The total turbulence intensity is then calculated using \Cref{eq:ti_at_turb}.
+In \Cref{eq:maxti}, $A_{w_{ij}}$ is the area of the wake of turbine $i$ at the downstream location of turbine $j$, $A_{r_j}$ is the area of the rotor of turbine $j$, and $I_{+_{ij}}$ is the added turbulence intensity from turbine $i$ at the downstream location of turbine $j$. In our implementation, only two values are compared at a time; the current value and the previous result of the smooth maximum function. The total turbulence intensity is then calculated using \Cref{eq:ti_at_turb}.
 %
 \begin{equation}\label{eq:ti_at_turb}
     I_j = \sqrt{I_0^2+I_{+_j}^2}
@@ -296,7 +296,7 @@ The maximum error of \Cref{eq:smoothmax3} occurs when $t_{min} = t_{max}$, and c
 	\text{Error}_{max} = \frac{\ln{(2)}}{s}
 \end{equation}
 %
-To keep the error from the smooth max below 0.001, or about 1\% of the total turbulence intensity, we set $s=700$.
+To keep the error from the smooth maximum below 0.001, or about 1\% of the total turbulence intensity, we set $s=700$.
 
 % Using \Cref{eq:ti_npa} in the updated wake model would cause the effects of turbulence intensity to be included twice. We used \Cref{eq:ti_npa} to estimate the initial $k^*$ only. Within the model itself, the ambient turbulence intensity only impacts the model through Bastankhah and Port\'{e}-Agel (2016) \cite{bastankhah2016} and local turbulence intensity is not calculated. 
 %
@@ -345,7 +345,7 @@ Various methods can be used to approximate the effective velocity at the rotor. 
 %	\caption{Maximum (a) and average (b) directional power production error for varrying numbers of velocity samples on the rotor-swept area using the BP model as compared to LES results for Horns rev from \cite{niayifar2016}.}
 %	\label{fig:sampling-error}
 %\end{figure}
-When comparing our code to LES and other data, we used 100 sampling points across the rotor-swept area arranged in the sunflower seed pattern as shown in \Cref{fig:sampling_locs}(a). We found that 100 sample points on the rotor-swept area was more than sufficient to achieve the level of accuracy demonstrated by Niayifar and Port\'{e}-Agel in \cite{niayifar2016}. For efficiency during optimization, we approximated the effective velocity of each wind turbine by using a single sampling point located at the rotor hub as shown in \Cref{fig:sampling_locs}(b).
+When comparing our code to LES and other data, we used 100 sampling points across the rotor-swept area arranged in the sunflower seed pattern as shown in \Cref{fig:sampling_locs}(a). We found that 100 sample points on the rotor-swept area were more than sufficient to achieve the level of accuracy demonstrated by Niayifar and Port\'{e}-Agel in \cite{niayifar2016}. For efficiency during optimization, we approximated the effective velocity of each wind turbine by using a single sampling point located at the rotor hub as shown in \Cref{fig:sampling_locs}(b).
 
 \begin{figure}[ht]
 	\centering
@@ -369,7 +369,7 @@ AEP was calculated as in \Cref{eq:aep}.
     AEP = \bigg[\frac{hours}{day}\bigg]\bigg[\frac{days}{year} \bigg]\sum_{k=1}^{N_D} \bigg[ f_k \sum_{j=1}^{N_T}P_{j_k} \bigg]
 \end{equation}
 %
-In \Cref{eq:aep}, $N_D$ is the number of wind directions, $N_T$ is the number of wind wind turbines, $f_k$ is the probability of wind in direction $k$. The power of turbine $j$ in direction $k$, $P_{j_k}$, is calculated based on the definition of the power coefficient as done in \cite{gebraad2014} and shown in \Cref{eq:power}.
+In \Cref{eq:aep}, $N_D$ is the number of wind directions, $N_T$ is the number of wind turbines, and $f_k$ is the probability of wind in direction $k$. The power of turbine $j$ in direction $k$, $P_{j_k}$, is calculated based on the definition of the power coefficient as done in \cite{gebraad2014} and shown in \Cref{eq:power}.
 %
 \begin{equation}\label{eq:power}
     P_{j_k} = 
@@ -383,7 +383,7 @@ In \Cref{eq:aep}, $N_D$ is the number of wind directions, $N_T$ is the number of
 In \Cref{eq:power}, $\rho$ is the air density, $A_j$ represents the rotor-swept area of turbine $j$, and $C_{P_j}$ is the power coefficient of turbine $j$ for the given effective wind speed at the rotor ($\bar{u}_j$).
 
 \subsubsection{Model Verification}
-To verify our implementation of the models described, we compared the output of our code with data for the Horns Rev wind farm from Niayifar and Port\'{e}-Agel \cite{niayifar2016} as shown in \Cref{fig:power_line,fig:power_direction}. We calculated error, in normalized power, based on the LES data values from \cite{niayifar2016} and reported the error in \Cref{tab:validation-error}. For the Horns Rev row averaging comparison using 100 samples on the rotor-swept area as shown in \Cref{fig:power_line}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $0.034$ and a maximum error of $0.057$; ignoring local turbulence intensity resulted in an average error of $0.179$ and a maximum error of $0.253$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $0.018$ and a maximum error of $0.035$.  For the Horns Rev directional power comparison using 100 samples on the rotor-swept area as shown in \Cref{fig:power_direction}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $0.022$ and a maximum error of $0.055$; ignoring local turbulence intensity resulted in an average error of $0.058$ and a maximum error of $0.206$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $0.017$ and a maximum error of $0.053$. The high directional errors when local turbulence intensity is ignored are in the directions of highest wake interactions as can be seen in \Cref{fig:power_direction} and do not alter the general trend of the directional power. The Horns Rev comparisons using 1 sample on the rotor-swept area are shown in \Cref{fig:power_line}(b) and \Cref{fig:power_direction}(b). Using only 1 sample on the rotor-swept area resulted in slightly larger errors as reported in \Cref{tab:validation-error}. Based on our model error being within the range reported in \cite{niayifar2016} when we used 100 samples and local TI (less than $0.057$ and $0.055$ for the row and directional comparisons respectively), we determined that our implementation of the BP wake and NP farm models was sufficient and could be used to perform wind farm layout optimization case studies.
+To verify our implementation of the models described, we compared the output of our code with data for the Horns Rev wind farm from Niayifar and Port\'{e}-Agel \cite{niayifar2016} as shown in \Cref{fig:power_line,fig:power_direction}. We calculated error, in normalized power, based on the LES data values from \cite{niayifar2016} and reported the error in \Cref{tab:validation-error}. For the Horns Rev row-averaging comparison using 100 samples on the rotor-swept area as shown in \Cref{fig:power_line}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $0.034$ and a maximum error of $0.057$; ignoring local turbulence intensity resulted in an average error of $0.179$ and a maximum error of $0.253$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $0.018$ and a maximum error of $0.035$.  For the Horns Rev directional power comparison using 100 samples on the rotor-swept area as shown in \Cref{fig:power_direction}(a): the model values shown by Niayifar and Port\'{e}-Agel had an average error of $0.022$ and a maximum error of $0.055$; ignoring local turbulence intensity resulted in an average error of $0.058$ and a maximum error of $0.206$; calculating local turbulence intensity using either the hard maximum or smooth maximum both resulted in an average error of $0.017$ and a maximum error of $0.053$. The high directional errors when local turbulence intensity is ignored are in the directions of highest wake interactions as shown in \Cref{fig:power_direction} and do not alter the general trend of the directional power. The Horns Rev comparisons using one sample on the rotor-swept area are shown in \Cref{fig:power_line}(b) and \Cref{fig:power_direction}(b). Using only one sample on the rotor-swept area resulted in slightly larger errors as reported in \Cref{tab:validation-error}. Based on our model error being within the range reported in \cite{niayifar2016} when we used 100 samples and local TI (less than $0.057$ and $0.055$ for the row and directional comparisons, respectively), we determined that our implementation of the BP wake and NP farm models was sufficient and could be used to perform wind farm layout optimization case studies.
 
 \begin{figure}[htbp!]
 	\centering
@@ -405,7 +405,7 @@ To verify our implementation of the models described, we compared the output of 
 	\subfigure[]{
 		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/power_by_dir_horns_rev_1rpt.pdf}
 	}
-	\caption{Power by direction for the Horns Rev wind farm. (a) Comparing our code using 100 points to approximate the effective wind speed at the rotor. (b) Comparing our code using a single sample at the rotor hub to approximate the effective wind speed at the rotor.NP refers to LES and model results from \cite{niayifar2016}. All three methods of calculating TI refer to results obtained using our code. The three methods for calculating TI are to address various complications during our optimization process (see \Cref{sec:ti,sec:opt} for details).}
+	\caption{Power by direction for the Horns Rev wind farm. (a) Comparing our code using 100 points to approximate the effective wind speed at the rotor. (b) Comparing our code using a single sample at the rotor hub to approximate the effective wind speed at the rotor. NP refers to LES and model results from \cite{niayifar2016}. All three methods of calculating TI refer to results obtained using our code. The three methods for calculating TI are to address various complications during our optimization process (see \Cref{sec:ti,sec:opt} for details).}
 	
 	\label{fig:power_direction}
 \end{figure}
@@ -482,7 +482,7 @@ To verify our implementation of the models described, we compared the output of 
 
 \subsection{Test Case}\label{sec:testcase}
 
-For the LES comparison, we used the NREL 5MW reference turbine \cite{jonkman2009definition}. We used the same thrust and power coefficient curves for the NREL 5MW turbine as used in \cite{gebraad2017-max-aep}, with linear interpolation between points. Our test wind farm was constrained by the domain of the LES simulation precursor. We limited the LES simulation to an area 5 km square to keep necessary computational resources to a reasonable level. In order to avoid edge effects in the simulation, we needed at least 0.5 km between the edge of wind farm and the edge of the simulation space. To limit the computational cost, we used only a single wind direction and rotated the wind turbine locations within the simulation space to calculate the power production in different directions so that a single precursor could be used. The resulting available space for the wind farm was a circle with a 2 km radius in the middle of the simulation space. Within the resulting circular region, we placed as many turbines as possible in a concentric circular pattern with a minimum allowable distance between turbines of five times the rotor diameter. The resulting baseline layout is shown in \Cref{fig:starting-layout}.    
+For the LES comparison, we used the National Renewable Energy Laboratory (NREL) 5-MW reference turbine \cite{jonkman2009definition}. We used the same thrust and power coefficient curves for the NREL 5-MW turbine as used in \cite{gebraad2017-max-aep}, with linear interpolation between points. Our test wind farm was constrained by the domain of the LES simulation precursor. We limited the LES simulation to a 5-km square area to keep necessary computational resources to a reasonable level. In order to avoid edge effects in the simulation, we needed at least 0.5 km between the edge of wind farm and the edge of the simulation space. To limit the computational cost, we used only a single wind direction and rotated the wind turbine locations within the simulation space to calculate the power production in different directions so that a single precursor could be used. The resulting available space for the wind farm was a circle with a 2-km radius in the middle of the simulation space. Within the resulting circular region, we placed as many turbines as possible in a concentric circular pattern with a minimum allowable distance between turbines of five times the rotor diameter. The resulting baseline layout is shown in \Cref{fig:starting-layout}.    
 
 \begin{figure}[ht]
 	\centering
@@ -491,8 +491,8 @@ For the LES comparison, we used the NREL 5MW reference turbine \cite{jonkman2009
 	\label{fig:starting-layout}
 \end{figure}
 
-For the wind frequencies, we chose to use the Nantucket wind rose \cite{wrcc2017} %was selected as an approximation of the wind rose of the new Bay State Wind farm proposed for development off the coast of Massachusetts \cite{baystate2017}
-. To reduce the computational cost of the LES simulations, we generated a wind rose with 12 directions by binning every 3 directions from the Nantucket wind rose starting with wind from the North. We used the 12 direction wind rose for both the optimizations and the LES. The original and final wind roses can be seen in \Cref{fig:windrose}.
+For the wind frequencies, we chose to use the Nantucket wind rose \cite{wrcc2017}. %was selected as an approximation of the wind rose of the new Bay State Wind farm proposed for development off the coast of Massachusetts \cite{baystate2017}
+To reduce the computational cost of the LES simulations, we generated a wind rose with 12 directions by binning every 3 directions from the Nantucket wind rose starting with wind from the north. We used the 12-direction wind rose for both the optimizations and the LES. The original and final wind roses are shown in \Cref{fig:windrose}.
 
 \begin{figure}[ht]
 	\centering
@@ -508,7 +508,7 @@ For the wind frequencies, we chose to use the Nantucket wind rose \cite{wrcc2017
 
 \subsection{Optimization}\label{sec:opt}
 
-We optimized the wind farm layout using annual energy production (AEP) as the objective. The optimization problem was formulated as shown in \Cref{eq:objective}.
+We optimized the wind farm layout using AEP as the objective. The optimization problem was formulated as shown in \Cref{eq:objective}.
 %
 \begin{equation}
 	\label{eq:objective}
@@ -523,17 +523,17 @@ In \Cref{eq:objective}, $(x_i,y_i)$ is the position of each turbine $i$, $S_{ij}
 
 The optimization problem was built in OpenMDAO, a Multidisciplinary Design Analysis and Optimization platform  \cite{gray2010_OpenMDAO}. Gradients of the wake model were obtained using Tapenade, an algorithmic differentiation tool \cite{tapenade2013}. Gradients of all other system components were derived by hand. The final system gradients were compiled by OpenMDAO.
 
-The gradients of both the objective function and constraints were scaled to be close to order one. The final problem was then solved using SNOPT (Sparse Nonlinear OPTimizer), a gradient-based optimization algorithm that uses a sequential quadratic programming approach. SNOPT was used in this case because it is well suited to non-linear problems with high dimensionality \cite{gill2005}. 
+The gradients of both the objective function and constraints were scaled to be close to order one. The final problem was then solved using the Sparse Nonlinear OPTimizer (SNOPT), a gradient-based optimization algorithm that uses a sequential quadratic programming approach. SNOPT was used in this case because it is well suited to nonlinear problems with high dimensionality \cite{gill2005}. 
 
-Along with SNOPT, we used the WEC method for reducing the multimodality of the wind farm layout optimization problem \cite{thomas2018-wec}. WEC relaxation factors ran from at $3.00$ down to, and including, $1.00$ in steps of $0.25$.  After completing the WEC series, we ran one final optimization, from the optimized layout found using WEC. In the final optimization, local turbulence intensity was calculated with the smooth maximum function as in \Cref{eq:smoothmax3}. For final wind farm assessment, we calculated local turbulence intensity using the hard max as done in \cite{niayifar2016}. 
+Along with SNOPT, we used the wake expansion continuation (WEC) method for reducing the multimodality of the wind farm layout optimization problem \cite{thomas2018-wec}. WEC relaxation factors ran from at $3.00$ down to, and including, $1.00$ in steps of $0.25$.  After completing the WEC series, we ran one final optimization, from the optimized layout found using WEC. In the final optimization, local turbulence intensity was calculated with the smooth maximum function as in \Cref{eq:smoothmax3}. For final wind farm assessment, we calculated local turbulence intensity using the hard maximum as done in \cite{niayifar2016}. 
 
-As mentioned in \Cref{sec:ti}, we used three methods for calculating TI: (1) constant ambient TI only, (2) local TI calculated with a smooth max, and (3) local TI calculated with a hard max as done in the NP wind farm model. Because the hard max (3) creates discontinuities in the model and is not differentiable, we used a smooth maximum function (2) in the final step of our optimization process.  Calculating local TI as done in the NP wind farm model, with either the hard or smooth maximum functions, adds additional local optima that are exaggerated when using WEC. The additional local optima drastically reduce the effectiveness of the WEC method, so we neglected local turbulence intensity during the WEC optimization series. 
+As mentioned in \Cref{sec:ti}, we used three methods for calculating TI: (1) constant ambient TI only, (2) local TI calculated with a smooth max, and (3) local TI calculated with a hard maximum as done in the NP wind farm model. Because the hard maximum (3) creates discontinuities in the model and is not differentiable, we used a smooth maximum function (2) in the final step of our optimization process.  Calculating local TI as done in the NP wind farm model, with either the hard or smooth maximum functions, adds additional local optima that are exaggerated when using WEC. The additional local optima drastically reduce the effectiveness of the WEC method, so we neglected local turbulence intensity during the WEC optimization series. 
 
-To arrive at the final optimized solution, we used a multi-start optimization approach. Starting locations we used were the baseline layout shown in \Cref{fig:starting-layout}, as well as 199 pseudo-random layouts meeting the constraints of the optimization problem.
+To arrive at the final optimized solution, we used a multistart optimization approach. Starting locations we used were the baseline layout shown in \Cref{fig:starting-layout}, as well as 199 pseudo-random layouts meeting the constraints of the optimization problem.
 
 \subsection{Large-Eddy Simulation}
 
-The simulator for wind farm applications (SOWFA) is a high-fidelity, large-eddy simulation tool that was developed at NREL for wind plant studies \cite{churchfieldnwtc,churchfield2012numerical,fleming2013sowfa}.  It is a computational fluid dynamics solver based on OpenFOAM \cite{jasak2007openfoam} and can model turbines as actuator disks or actuator lines.  This study uses turbines modeled as actuator disks to reduce computational cost.  Separate studies have been conducted that demonstrate the steady-state power is similar in actuator disk and actuator line cases \cite{martinez2012comparison}.
+The simulator for wind farm applications (SOWFA) is a high-fidelity, large-eddy simulation tool that was developed at NREL for wind plant studies \cite{churchfieldnwtc,churchfield2012numerical,fleming2013sowfa}.  It is a computational fluid dynamics solver based on OpenFOAM \cite{jasak2007openfoam} and can model turbines as actuator disks or actuator lines.  This study uses turbines modeled as actuator disks to reduce computational cost.  Separate studies have been conducted that demonstrate that the steady-state power is similar in actuator disk and actuator line cases \cite{martinez2012comparison}.
 
 SOWFA solves the three-dimensional, incompressible, Navier-Stokes equations and transport of potential temperature equations, which take into account the thermal buoyancy and Earth rotation (Coriolis) effects in the atmosphere.  The inflow conditions for these simulations are generated using a periodic atmospheric boundary layer precursor with no turbines.  
 
@@ -580,7 +580,7 @@ We will now investigate the error with more granularity. The directional power p
 	\subfigure[]{
 		\includegraphics[width=0.48\textwidth, trim={0cm 0cm 0cm 0cm}]{final_images/sowfa_compare_pow_by_dir_opt.pdf}
 	}
-	\caption{Power production in each direction for SOWFA and the BP wake model using the hard max and 100 samples across the rotor for (a) the base layout (\Cref{fig:starting-layout}) and (b) the optimized layout (\Cref{fig:optimized-layout}).}
+	\caption{Power production in each direction for SOWFA and the BP wake model using the hard maximum and 100 samples across the rotor for (a) the base layout (\Cref{fig:starting-layout}) and (b) the optimized layout (\Cref{fig:optimized-layout}).}
 	\label{fig:dir-power}
 \end{figure}
 
