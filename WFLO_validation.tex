@@ -286,7 +286,7 @@ In \Cref{eq:smoothmax1,eq:smoothmax2,eq:smoothmax3}, $s$ controls the smoothness
     I_{+_j} = \text{max}_{smooth}{\bigg(\frac{I_{+_{ij}}A_{w_{ij}}}{A_{r_j}}\bigg)}
 \end{equation}
 %
-In \Cref{eq:maxti}, $A_{w_{ij}}$ is the area of the wake of turbine $i$ at the downstream location of turbine $j$, $A_{r_j}$ is the area of the rotor of turbine $j$, and $I_{+_{ij}}$ is the added turbulence intensity from turbine $i$ at the downstream location of turbine $j$. In our implementation, only two values are compared at a time; the current value and the previous result of the smooth maximum function. The total turbulence intensity is then calculated using \Cref{eq:ti_at_turb}.
+In \Cref{eq:maxti}, $A_{w_{ij}}$ is the area of the wake of turbine $i$ at the downstream location of turbine $j$, $A_{r_j}$ is the area of the rotor of turbine $j$, and $I_{+_{ij}}$ is the added turbulence intensity from turbine $i$ at the downstream location of turbine $j$. In our implementation, only two values are compared at a time: the current value and the previous result of the smooth maximum function. The total turbulence intensity is then calculated using \Cref{eq:ti_at_turb}.
 %
 \begin{equation}\label{eq:ti_at_turb}
     I_j = \sqrt{I_0^2+I_{+_j}^2}
@@ -535,7 +535,7 @@ To arrive at the final optimized solution, we used a multistart optimization app
 
 \subsection{Large-Eddy Simulation}
 
-The simulator for wind farm applications (SOWFA) is a high-fidelity, large-eddy simulation tool that was developed at NREL for wind plant studies \cite{churchfieldnwtc,churchfield2012numerical,fleming2013sowfa}.  It is a computational fluid dynamics solver based on OpenFOAM \cite{jasak2007openfoam} and can model turbines as actuator disks or actuator lines.  This study uses turbines modeled as actuator disks to reduce computational cost.  Separate studies have been conducted that demonstrate that the steady-state power is similar in actuator disk and actuator line cases \cite{martinez2012comparison}.
+The Simulator fOr Wind Farm Applications (SOWFA) is a high-fidelity, large-eddy simulation tool that was developed at NREL for wind plant studies \cite{churchfieldnwtc,churchfield2012numerical,fleming2013sowfa}.  It is a computational fluid dynamics solver based on OpenFOAM \cite{jasak2007openfoam} and can model turbines as actuator disks or actuator lines.  This study uses turbines modeled as actuator disks to reduce computational cost.  Separate studies have been conducted that demonstrate that the steady-state power is similar in actuator disk and actuator line cases \cite{martinez2012comparison}.
 
 SOWFA solves the three-dimensional, incompressible, Navier-Stokes equations and transport of potential temperature equations, which take into account the thermal buoyancy and Earth rotation (Coriolis) effects in the atmosphere.  The inflow conditions for these simulations are generated using a periodic atmospheric boundary layer precursor with no turbines.  
 
