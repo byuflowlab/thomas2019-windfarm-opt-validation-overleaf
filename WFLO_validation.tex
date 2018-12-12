@@ -57,7 +57,7 @@
 \maketitle
 
 \begin{abstract}
-The models used during wind farm layout optimization use simplifying assumptions that can alter the design space. Some characteristics of the simple models may negatively influence the resulting layouts. In this paper, we perform wind farm layout optimization and compare the resulting improvements to large-eddy simulation (LES) results to confirm that the layout was actually improved. We begin by describing the models used, including changes specific for use with gradient-based optimization. We then compare our models' output to previously published model and LES results. Using the models described, we performed gradient-based wind farm layout optimization using exact gradients. Power production for the original and optimized layouts were recalculated using LES. The model and LES results were then compared. The models predicted an improvement in annual energy production (AEP) of $7.4\%$, while the LES reported an AEP improvement of $9.9\%$. We concluded that the improvements found by optimizing with the simple models are not just an artifact of the models, but are real improvements.
+The models used during wind farm layout optimization use simplifying assumptions that can alter the design space. Some characteristics of the simple models may negatively influence the resulting layouts. In this paper, we perform wind farm layout optimization using a simple wake model and compare the resulting improvements to large-eddy simulation (LES) results to confirm that the layout was actually improved. We begin by describing the models used, including changes specific for use with gradient-based optimization. We then compare our models' output to previously published model and LES results. Using the models described, we performed gradient-based wind farm layout optimization using exact gradients. Power production for the original and optimized layouts were recalculated using LES. The model and LES results were then compared. The simple models predicted an improvement in annual energy production (AEP) of $7.4\%$, while the LES reported an AEP improvement of $9.9\%$. We concluded that the improvements found by optimizing with the simple models are not just an artifact of the model characteristics, but are real improvements.
 \end{abstract}
 
 \section{Introduction}
@@ -222,10 +222,10 @@ NP found the most accurate method of wake combination to be a linear velocity de
 	u_j = \bar{u}_\infty - \sum_{i=1}^{N_T} [\bar{u}_i - u_{ij}] = \bar{u}_\infty - \sum_{i=1}^{N_T} \Delta u_{ij}
 \end{equation}
 %
-In \Cref{eq:wake-comb-lin}, $u_j$ is the flow velocity at the point of interest, $\bar{u_i}$ is the average inflow velocity of upstream turbine $i$, $u_{ij}$ is the wind speed that would exist at the point $j$ if only turbine $i$ were accounted for, and $\bar{u}_{\infty}$ is the average free-stream velocity. For the upstream turbine velocity to be used, the inflow velocity of the turbines must be calculated in order from upstream to downstream. We used the heapsort algorithm to obtain a sorted index list of the turbines prior to solving the system for each wind direction. Using the sorted index list allowed turbine sorting without overcomplicating the gradients of the system. Our tests of the accuracy of various wake combination methods also found this method to be the most accurate in comparison to the LES results used by Niayifar and Port\'{e}-Agel in \cite{niayifar2016}.
+In \Cref{eq:wake-comb-lin}, $u_j$ is the flow velocity at the point of interest, $\bar{u_i}$ is the average inflow velocity of upstream turbine $i$, $u_{ij}$ is the wind speed that would exist at the point $j$ if only turbine $i$ were accounted for, and $\bar{u}_{\infty}$ is the average free-stream velocity. For the upstream turbine velocity to be used, the inflow velocity of the turbines must be calculated in order from upstream to downstream. We used the heapsort algorithm to obtain a sorted index list of the turbines prior to solving the system for each wind direction. Using the sorted index list allowed turbine sorting without overcomplicating the gradients of the system. Our tests of the accuracy of various wake combination methods also found this method to be the most accurate in comparison to the LES results used by NP in \cite{niayifar2016}.
 
 \subsubsection{Turbulence Intensity}\label{sec:ti}
-Niayifar and Port\'{e}-Agel calculated local turbulence intensity using the model presented by Crespo and Hern\'{a}ndez in \cite{crespo1996}. The local turbulence intensity is then applied to the BP model through an empirical model for calculating the wake expansion coefficient as shown in \Cref{eq:ti_npa} \cite{niayifar2016}.
+NP calculated local turbulence intensity using the model presented by Crespo and Hern\'{a}ndez in \cite{crespo1996}. The local turbulence intensity is then applied to the BP wake model through an empirical model for calculating the wake expansion coefficient as shown in \Cref{eq:ti_npa} \cite{niayifar2016}.
  %
  \begin{equation} \label{eq:ti_npa}
  	k^* = 0.3837 I + 0.003678
@@ -233,10 +233,10 @@ Niayifar and Port\'{e}-Agel calculated local turbulence intensity using the mode
 %
 In \Cref{eq:ti_npa}, $I$ is the turbulence intensity (TI). This model is only valid for TI values between 0.065 and 0.15. While the initial BP wake model does not include TI \cite{bastankhah2014}, TI was included by Bastankhah and Port\'{e}-Agel in their 2016 version of the model \cite{bastankhah2016}. We used the same TI values for the BP 2016 wake model and the NP wind farm model. 
 
-The algorithm for calculating local turbulence intensity using the hard maximum function is given in \Cref{alg:ti}. In our code implementation, we combined the nested loops used for the velocity and TI calculations. 
+The algorithm for calculating local TI using the hard maximum function is given in \Cref{alg:ti}. In our code implementation, we combined the nested loops used for the velocity and TI calculations. 
 %
 \begin{algorithm}[htpb!]
-	\caption{Turbulence Intensity Calculation (for more information, see \cite{niayifar2016})}
+	\caption{Local Turbulence Intensity Calculation (for more information, see \cite{niayifar2016})}
    \label{alg:ti}
    \begin{algorithmic}
    \Ensure Turbines are sorted by relative downstream position
@@ -259,7 +259,7 @@ The algorithm for calculating local turbulence intensity using the hard maximum 
                \EndIf
                
                \State $I_{+_{ij}} \gets 0.73 a_{i}^{0.8325} I_i^{0.0325} [\Delta X/D_{r_i}]^{-0.32}$
-               \State $I_{+_j} \gets \max{[I_{+_{ij}}A_{w_{ij}}/A_{r_j}, I_{+_j}]}$ \Comment{We used \Cref{eq:smoothmax3} during the final optimization}
+               \State $I_{+_j} \gets \max{[I_{+_{ij}}A_{w_{ij}}/A_{r_j}, I_{+_j}]}$ \Comment{We used \Cref{eq:smoothmax3} during optimization}
         	\EndIf
         \EndFor
         \State $I_j \gets \sqrt{I_{0}^2 + I_{+_j}^2}$ \Comment{Directly influenced by only one upstream turbine}
@@ -269,7 +269,7 @@ The algorithm for calculating local turbulence intensity using the hard maximum 
 \end{algorithm}
 %
 
-We used three different approaches to calculating TI at various points in the optimization process: (1) ambient TI only, (2) local TI with a smooth maximum function, and (3) local TI with a hard maximum function as done by Niayifar and Port\'{e}-Agel \cite{niayifar2016} and shown in \Cref{alg:ti}. The reasons for using the three methods for calculating TI are discussed in \Cref{sec:opt}. The smooth maximum function we used is shown in \Cref{eq:smoothmax1,eq:smoothmax2,eq:smoothmax3} and is derived from the LogSumExp function \cite{cook2010-softmaximum}.
+We used three different approaches to calculating TI at various points in the optimization process: (1) ambient TI only, (2) local TI with a smooth maximum function, and (3) local TI with a hard maximum function as done by NP \cite{niayifar2016} and shown in \Cref{alg:ti}. The reasons for using the three methods for calculating TI are discussed in \Cref{sec:opt}. The smooth maximum function we used is shown in \Cref{eq:smoothmax1,eq:smoothmax2,eq:smoothmax3} and is derived from the log-sum-exp function \cite{cook2010-softmaximum}.
 %
 \begin{equation}\label{eq:smoothmax1}
     t_{max} = \min(t_1, t_2)
@@ -414,7 +414,7 @@ To verify our implementation of the models described, we compared the output of 
 \end{figure}
 
 \begin{table*}[htpb!]\centering
-\caption{Normalized model power error as compared to Horn Rev LES results \cite{niayifar2016}.}\label{tab:verification-error}
+\caption{Normalized model power error as compared to Horn Rev LES results from  \cite{niayifar2016}.}\label{tab:verification-error}
 \ra{1.3}
 \begin{tabular}{@{}llrcrrcrrcrr@{}}\toprule
 & & & & \multicolumn{2}{c}{No Local TI} &\phantom{a}& \multicolumn{2}{c}{Hard Max TI} &\phantom{a}& \multicolumn{2}{c}{Smooth Max TI}\\ 
@@ -586,7 +586,7 @@ We will now investigate the error with more granularity. The directional power p
 \end{figure}
 
 \begin{table*}[htpb!]\centering
-\caption{BP and SOWFA Results}\label{tab:opt-results}
+\caption{BP Model and SOWFA Results}\label{tab:opt-results}
 \ra{1.3}
 \begin{tabular}{@{}lcrrrcrrrcrr@{}}\toprule
 & \phantom{a} &\multicolumn{3}{c}{Base Case} &\phantom{a}& \multicolumn{3}{c}{Optimized} &\phantom{a}& \multicolumn{2}{c}{Improvement}\\ 
